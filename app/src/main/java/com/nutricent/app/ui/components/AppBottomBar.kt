@@ -5,6 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -49,16 +53,16 @@ fun AppBottomBar(
 ) {
     val colorScheme = MaterialTheme.colorScheme
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(92.dp)
-    ) {
+    Box( modifier = modifier
+        .fillMaxWidth()
+        // Tambah ruang di bagian bawah navbar
+        .windowInsetsPadding(WindowInsets.navigationBars)
+        .height(100.dp) ) {
         // Background navbar
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(76.dp)
+                .height(84.dp)
                 .align(Alignment.BottomCenter)
                 .shadow(
                     elevation = 6.dp,
@@ -73,7 +77,8 @@ fun AppBottomBar(
                     .padding(
                         start = 8.dp,
                         end = 8.dp,
-                        bottom = 7.dp
+                        top = 6.dp,
+                        bottom = 8.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -148,7 +153,7 @@ fun AppBottomBar(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "Scan makanan",
                     tint = colorScheme.onPrimary,
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier.size(34.dp)
                 )
             }
         }
@@ -175,7 +180,10 @@ private fun NavbarItem(
         modifier = modifier
             .fillMaxSize()
             .clickable(onClick = onClick)
-            .padding(top = 9.dp),
+            .padding(
+                top = 7.dp,
+                bottom = 12.dp
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -183,15 +191,15 @@ private fun NavbarItem(
             imageVector = icon,
             contentDescription = label,
             tint = itemColor,
-            modifier = Modifier.size(27.dp)
+            modifier = Modifier.size(25.dp)
         )
 
-        Spacer(modifier = Modifier.height(3.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
             text = label,
             color = itemColor,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelMedium,
             fontWeight = if (selected) {
                 FontWeight.SemiBold
             } else {
@@ -200,12 +208,12 @@ private fun NavbarItem(
             maxLines = 1
         )
 
-        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         // Indikator menu aktif
         Box(
             modifier = Modifier
-                .width(22.dp)
+                .width(20.dp)
                 .height(3.dp)
                 .background(
                     color = if (selected) {
@@ -218,4 +226,3 @@ private fun NavbarItem(
         )
     }
 }
-
