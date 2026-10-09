@@ -78,3 +78,11 @@ val SurfaceHighestDark = Color(0xFF36342C)
 val NutriTeal = Color(0xFF2AAE9B)
 
 val OnNutriTeal = Color(0xFFFFFFFF)
+
+val NutriDarkGreen = Color(0xFF23533F)
+val NutriButtonGreen = Color(0xFF4C9A78)
+val NutriBadgeContainer = Color(0xFFE4F5ED)
+val NutriBorderColor = Color(0xFFD3EDDF)
+
+val NutriScreenBackground = Color(0xFFFFFFFF)
+val NutriCardSurface = Color(0xFFFFFFFF)

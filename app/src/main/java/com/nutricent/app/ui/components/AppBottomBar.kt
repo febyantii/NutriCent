@@ -5,14 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,6 +36,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.nutricent.app.ui.theme.NutriButtonGreen
+import com.nutricent.app.ui.theme.NutriDarkGreen
 
 enum class BottomTab {
     HOME, JOURNAL, ANALYTICS, PROFILE
@@ -53,12 +54,12 @@ fun AppBottomBar(
 ) {
     val colorScheme = MaterialTheme.colorScheme
 
-    Box( modifier = modifier
-        .fillMaxWidth()
-        // Tambah ruang di bagian bawah navbar
-        .windowInsetsPadding(WindowInsets.navigationBars)
-        .height(100.dp) ) {
-        // Background navbar
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .height(100.dp)
+    ) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -99,7 +100,6 @@ fun AppBottomBar(
                     modifier = Modifier.weight(1f)
                 )
 
-                // Ruang kosong untuk tombol scan di tengah
                 Spacer(
                     modifier = Modifier.width(76.dp)
                 )
@@ -122,7 +122,6 @@ fun AppBottomBar(
             }
         }
 
-        // Floating scan button
         Surface(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -131,8 +130,8 @@ fun AppBottomBar(
                 .shadow(
                     elevation = 10.dp,
                     shape = CircleShape,
-                    spotColor = colorScheme.primary.copy(alpha = 0.30f),
-                    ambientColor = colorScheme.primary.copy(alpha = 0.15f)
+                    spotColor = NutriButtonGreen.copy(alpha = 0.35f),
+                    ambientColor = NutriButtonGreen.copy(alpha = 0.18f)
                 )
                 .clickable(onClick = onScanClick),
             shape = CircleShape,
@@ -144,7 +143,7 @@ fun AppBottomBar(
                     .fillMaxSize()
                     .padding(6.dp)
                     .background(
-                        color = colorScheme.primary,
+                        color = NutriButtonGreen,
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -152,7 +151,7 @@ fun AppBottomBar(
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "Scan makanan",
-                    tint = colorScheme.onPrimary,
+                    tint = Color.White,
                     modifier = Modifier.size(34.dp)
                 )
             }
@@ -171,9 +170,9 @@ private fun NavbarItem(
     val colorScheme = MaterialTheme.colorScheme
 
     val itemColor = if (selected) {
-        colorScheme.primary
+        NutriDarkGreen
     } else {
-        colorScheme.onSurfaceVariant
+        colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
     }
 
     Column(
@@ -201,7 +200,7 @@ private fun NavbarItem(
             color = itemColor,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = if (selected) {
-                FontWeight.SemiBold
+                FontWeight.Bold
             } else {
                 FontWeight.Normal
             },
@@ -210,14 +209,13 @@ private fun NavbarItem(
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        // Indikator menu aktif
         Box(
             modifier = Modifier
                 .width(20.dp)
                 .height(3.dp)
                 .background(
                     color = if (selected) {
-                        colorScheme.primary
+                        NutriButtonGreen
                     } else {
                         Color.Transparent
                     },
