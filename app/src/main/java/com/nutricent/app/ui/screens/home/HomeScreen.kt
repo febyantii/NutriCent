@@ -204,12 +204,15 @@ private fun HomeTopBar(onNotificationClick: () -> Unit, onSettingsClick: () -> U
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Eco, null, tint = GreenPrimary, modifier = Modifier.size(26.dp))
-            Spacer(Modifier.width(4.dp))
-            Text("Nutri", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = GreenDark)
-            Text("Cent", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = GreenPrimary)
-        }
+        Image(
+            painter = painterResource(R.drawable.logo_nutricent),
+            contentDescription = "Logo NutriCent",
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.CenterStart,
+            modifier = Modifier
+                .height(65.dp)
+                .widthIn(max = 150.dp)
+        )
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onNotificationClick) {
                 Box {
