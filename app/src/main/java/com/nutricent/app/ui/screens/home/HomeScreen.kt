@@ -1,6 +1,5 @@
 package com.nutricent.app.ui.screens.home
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -37,17 +36,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.nutricent.app.data.DummyData
+import com.nutricent.app.model.FoodLog
+import com.nutricent.app.model.MealType
 import com.nutricent.app.ui.components.AppBottomBar
 import com.nutricent.app.ui.components.BottomTab
-import com.nutricent.app.ui.theme.NutriCentTheme
 import com.nutricent.app.util.formatRupiah
 import com.nutricent.app.viewmodel.FoodLogViewModel
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
+import com.nutricent.app.R
+
 
 // ---------- Warna ----------
 private val GreenPrimary = Color(0xFF3E9E75)
@@ -57,9 +61,10 @@ private val GreenBorder = Color(0xFFD3EBDD)
 private val GreenTrack = Color(0xFFD6F0E2)
 private val TextGray = Color(0xFF6B7280)
 
-// ---------- Model UI ----------
+// ---------- Model UI untuk kartu Menu Hari Ini ----------
 data class MenuItemUi(
     val title: String,
+    val foodName: String,
     val kcal: Int,
     val background: Color,
     val border: Color,
@@ -67,15 +72,27 @@ data class MenuItemUi(
     @param:DrawableRes val imageRes: Int? = null
 )
 
-// TODO: nanti ganti dengan data asli dari ViewModel
-private val dummyMenus = listOf(
-    MenuItemUi("Breakfast", 350, Color(0xFFFFF9DB), Color(0xFFF3D77A), Color(0xFFFFEFB0)),
-    MenuItemUi("Lunch", 520, Color(0xFFE9F8EF), Color(0xFF8ED1AC), Color(0xFFCDEEDA)),
-    MenuItemUi("Dinner", 420, Color(0xFFF3EBFF), Color(0xFFC7A6FF), Color(0xFFE2D0FF)),
-    MenuItemUi("Snack", 150, Color(0xFFFFEEE6), Color(0xFFF5B79A), Color(0xFFFFD9C6))
-)
+/** Ubah data makanan (DummyData.todayMenu) jadi tampilan kartu sesuai jenis makannya. */
+private fun FoodLog.toMenuUi(): MenuItemUi = when (mealType) {
+    MealType.BREAKFAST -> MenuItemUi(
+        "Breakfast", name, calories,
+        Color(0xFFFFF9DB), Color(0xFFF3D77A), Color(0xFFFFEFB0), imageRes
+    )
+    MealType.LUNCH -> MenuItemUi(
+        "Lunch", name, calories,
+        Color(0xFFE9F8EF), Color(0xFF8ED1AC), Color(0xFFCDEEDA), imageRes
+    )
+    MealType.DINNER -> MenuItemUi(
+        "Dinner", name, calories,
+        Color(0xFFF3EBFF), Color(0xFFC7A6FF), Color(0xFFE2D0FF), imageRes
+    )
+    else -> MenuItemUi(
+        "Snack", name, calories,
+        Color(0xFFFFEEE6), Color(0xFFF5B79A), Color(0xFFFFD9C6), imageRes
+    )
+}
 
-// ---------- Screen ----------
+// ---------- Screen (signature jangan diubah, sudah terhubung ke AppNavHost) ----------
 @Composable
 fun HomeScreen(
     foodLogViewModel: FoodLogViewModel,
@@ -89,12 +106,12 @@ fun HomeScreen(
         scope.launch { snackbarHostState.showSnackbar("Segera hadir") }
     }
 
-    // --- Data dari ViewModel ---
+    // --- Kalori ---
     val kaloriDikonsumsi = foodLogViewModel.totalCalories.toDouble()
     val kaloriTarget = foodLogViewModel.userProfile.dailyCalorieTarget.toDouble()
     val kaloriProgress = if (kaloriTarget > 0) (kaloriDikonsumsi / kaloriTarget).toFloat() else 0f
 
-    // NOTE: sesuaikan nama field budget total jika berbeda di UserProfile kamu
+    // --- Budget ---
     val budgetTotal = foodLogViewModel.userProfile.dailyBudget
     val budgetSisa = foodLogViewModel.remainingBudget
     val budgetTerpakai = budgetTotal - budgetSisa
@@ -114,42 +131,68 @@ fun HomeScreen(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp, bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            HomeTopBar(onNotificationClick = comingSoon, onSettingsClick = comingSoon)
-            GreetingRow(userName = "Feby") // TODO: ambil dari userProfile jika ada field nama
-            KaloriCard(
-                consumedText = formatNumber(kaloriDikonsumsi),
-                targetText = formatNumber(kaloriTarget),
-                remainingText = formatNumber((kaloriTarget - kaloriDikonsumsi).coerceAtLeast(0.0)),
-                progress = kaloriProgress,
-                onClick = onNavigateToJournal
-            )
-            BudgetCard(
-                spentText = formatRupiah(budgetTerpakai),
-                totalText = formatRupiah(budgetTotal),
-                progress = budgetProgress,
-                onClick = comingSoon
-            )
-            MenuHariIniSection(
-                menus = dummyMenus,
-                onSeeAll = onNavigateToJournal,
-                onCameraClick = { onNavigateToScanner() }
-            )
-            RekomendasiSection("Jaga asupan protein kamu! Bisa bantu kenyang lebih lama dan menjaga massa otot.")
-
-            // Tombol tes sementara (dari stub lama), hapus jika tidak perlu
-            Button(onClick = {
+        HomeContent(
+            modifier = Modifier.padding(padding),
+            userName = foodLogViewModel.userProfile.name,
+            consumedText = formatNumber(kaloriDikonsumsi),
+            targetText = formatNumber(kaloriTarget),
+            remainingText = formatNumber((kaloriTarget - kaloriDikonsumsi).coerceAtLeast(0.0)),
+            kaloriProgress = kaloriProgress,
+            spentText = formatRupiah(budgetTerpakai),
+            totalText = formatRupiah(budgetTotal),
+            budgetProgress = budgetProgress,
+            menus = foodLogViewModel.foodsOfSelectedDate.map { it.toMenuUi() },
+            onKaloriClick = onNavigateToJournal,
+            onBudgetClick = comingSoon,
+            onNotificationClick = comingSoon,
+            onSettingsClick = comingSoon,
+            onSeeAll = onNavigateToJournal,
+            onCameraClick = { onNavigateToScanner() },
+            onTestDetailClick = {
                 foodLogViewModel.foodsOfSelectedDate.firstOrNull()?.let { onNavigateToDetail(it.id) }
-            }) { Text("Tes: buka detail item pertama") }
-        }
+            }
+        )
+    }
+}
+
+// ---------- Isi layar (tanpa ViewModel supaya bisa di-Preview) ----------
+@Composable
+private fun HomeContent(
+    modifier: Modifier = Modifier,
+    userName: String,
+    consumedText: String,
+    targetText: String,
+    remainingText: String,
+    kaloriProgress: Float,
+    spentText: String,
+    totalText: String,
+    budgetProgress: Float,
+    menus: List<MenuItemUi>,
+    onKaloriClick: () -> Unit,
+    onBudgetClick: () -> Unit,
+    onNotificationClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onSeeAll: () -> Unit,
+    onCameraClick: (MenuItemUi) -> Unit,
+    onTestDetailClick: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp)
+            .padding(top = 16.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        HomeTopBar(onNotificationClick, onSettingsClick)
+        GreetingRow(userName)
+        KaloriCard(consumedText, targetText, remainingText, kaloriProgress, onKaloriClick)
+        BudgetCard(spentText, totalText, budgetProgress, onBudgetClick)
+        MenuHariIniSection(menus, onSeeAll, onCameraClick)
+        RekomendasiSection("Jaga asupan protein kamu! Bisa bantu kenyang lebih lama dan menjaga massa otot.")
+
+        // Tombol tes sementara (dari stub lama). Hapus jika tidak diperlukan.
+
     }
 }
 
@@ -198,7 +241,12 @@ private fun GreetingRow(userName: String) {
                 .background(GreenTrack),
             contentAlignment = Alignment.Center
         ) {
-            Text(userName.take(1).uppercase(), fontWeight = FontWeight.Bold, color = GreenDark, fontSize = 20.sp)
+            Text(
+                userName.take(1).uppercase(),
+                fontWeight = FontWeight.Bold,
+                color = GreenDark,
+                fontSize = 20.sp
+            )
         }
         Spacer(Modifier.width(12.dp))
         Column {
@@ -240,8 +288,17 @@ private fun CardHeader(title: String, icon: @Composable () -> Unit) {
             contentAlignment = Alignment.Center
         ) { icon() }
         Spacer(Modifier.width(8.dp))
-        Text(title, fontWeight = FontWeight.SemiBold, color = GreenDark, fontSize = 15.sp, modifier = Modifier.weight(1f))
-        Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = TextGray, modifier = Modifier.size(18.dp))
+        Text(
+            title,
+            fontWeight = FontWeight.SemiBold,
+            color = GreenDark,
+            fontSize = 15.sp,
+            modifier = Modifier.weight(1f)
+        )
+        Icon(
+            Icons.AutoMirrored.Filled.KeyboardArrowRight, null,
+            tint = TextGray, modifier = Modifier.size(18.dp)
+        )
     }
 }
 
@@ -264,14 +321,21 @@ private fun KaloriCard(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 CircularProgress(progress = p, size = 88.dp, stroke = 10.dp)
                 Spacer(Modifier.height(6.dp))
-                Text("${(p * 100).toInt()}% terpenuhi", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = GreenDark)
+                Text(
+                    "${(p * 100).toInt()}% terpenuhi",
+                    fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = GreenDark
+                )
             }
             Spacer(Modifier.width(20.dp))
             Column {
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(consumedText, fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = GreenDark)
                     Spacer(Modifier.width(4.dp))
-                    Text("/ $targetText kcal", fontSize = 14.sp, color = GreenDark, modifier = Modifier.padding(bottom = 6.dp))
+                    Text(
+                        "/ $targetText kcal",
+                        fontSize = 14.sp, color = GreenDark,
+                        modifier = Modifier.padding(bottom = 6.dp)
+                    )
                 }
                 Spacer(Modifier.height(6.dp))
                 LegendDot(GreenPrimary, "$consumedText kcal", "dikonsumsi")
@@ -332,7 +396,10 @@ private fun BudgetCard(spentText: String, totalText: String, progress: Float, on
             drawStopIndicator = {}
         )
         Spacer(Modifier.height(6.dp))
-        Text("${(p * 100).toInt()}% terpakai", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = GreenDark)
+        Text(
+            "${(p * 100).toInt()}% terpakai",
+            fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = GreenDark
+        )
     }
 }
 
@@ -353,13 +420,18 @@ private fun MenuHariIniSection(
                 Box(
                     Modifier.size(24.dp).clip(CircleShape).background(GreenTrack),
                     contentAlignment = Alignment.Center
-                ) { Icon(Icons.Default.Restaurant, null, tint = GreenPrimary, modifier = Modifier.size(14.dp)) }
+                ) {
+                    Icon(Icons.Default.Restaurant, null, tint = GreenPrimary, modifier = Modifier.size(14.dp))
+                }
                 Spacer(Modifier.width(8.dp))
                 Text("Menu Hari Ini", fontWeight = FontWeight.Bold, color = GreenDark, fontSize = 16.sp)
             }
             TextButton(onClick = onSeeAll, contentPadding = PaddingValues(0.dp)) {
                 Text("Lihat Semua", fontSize = 12.sp, color = GreenDark)
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = GreenDark, modifier = Modifier.size(16.dp))
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight, null,
+                    tint = GreenDark, modifier = Modifier.size(16.dp)
+                )
             }
         }
         Spacer(Modifier.height(8.dp))
@@ -373,7 +445,7 @@ private fun MenuHariIniSection(
 private fun MenuCard(menu: MenuItemUi, onCameraClick: () -> Unit) {
     Column(
         modifier = Modifier
-            .width(88.dp)
+            .width(100.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(menu.background)
             .border(1.dp, menu.border, RoundedCornerShape(16.dp))
@@ -381,13 +453,13 @@ private fun MenuCard(menu: MenuItemUi, onCameraClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
-            Modifier.size(52.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.7f)),
+            Modifier.size(64.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
             if (menu.imageRes != null) {
                 Image(
                     painter = painterResource(menu.imageRes),
-                    contentDescription = menu.title,
+                    contentDescription = menu.foodName,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -396,7 +468,14 @@ private fun MenuCard(menu: MenuItemUi, onCameraClick: () -> Unit) {
             }
         }
         Spacer(Modifier.height(8.dp))
-        Text(menu.title, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = GreenDark, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(
+            menu.title,
+            fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = GreenDark, maxLines = 1
+        )
+        Text(
+            menu.foodName,
+            fontSize = 10.sp, color = TextGray, maxLines = 1, overflow = TextOverflow.Ellipsis
+        )
         Spacer(Modifier.height(4.dp))
         Text(
             "${menu.kcal} kcal",
@@ -444,7 +523,9 @@ private fun RekomendasiSection(text: String) {
                 Box(
                     Modifier.size(32.dp).clip(CircleShape).background(GreenTrack),
                     contentAlignment = Alignment.Center
-                ) { Icon(Icons.Default.Eco, null, tint = GreenPrimary, modifier = Modifier.size(18.dp)) }
+                ) {
+                    Icon(Icons.Default.Eco, null, tint = GreenPrimary, modifier = Modifier.size(18.dp))
+                }
                 Spacer(Modifier.width(10.dp))
                 Text(text, fontSize = 13.sp, color = GreenDark, maxLines = 3, overflow = TextOverflow.Ellipsis)
             }
@@ -469,8 +550,13 @@ private fun CentyMascot() {
                 .padding(6.dp)
         )
         Spacer(Modifier.height(4.dp))
-        // TODO: ganti dengan gambar maskot: Image(painterResource(R.drawable.centy), ...)
-        Text("🥑", fontSize = 40.sp)
+
+        Image(
+            painter = painterResource(R.drawable.maskot_nutricent),
+            contentDescription = "Centy",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.size(72.dp)
+        )
     }
 }
 
@@ -478,15 +564,28 @@ private fun CentyMascot() {
 private fun formatNumber(value: Double): String =
     NumberFormat.getNumberInstance(Locale.US).apply { maximumFractionDigits = 0 }.format(value)
 
-@Preview(showBackground = true, showSystemUi = true)
+// ---------- Preview ----------
+@Preview(showBackground = true, widthDp = 390, heightDp = 844)
 @Composable
-fun HomeScreenPreview() {
-    NutriCentTheme {
-        HomeScreen(
-            foodLogViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-            onNavigateToJournal = {},
-            onNavigateToScanner = {},
-            onNavigateToDetail = {}
+private fun HomeContentPreview() {
+    MaterialTheme {
+        HomeContent(
+            userName = "Feby",
+            consumedText = "1,100",
+            targetText = "1,500",
+            remainingText = "400",
+            kaloriProgress = 0.73f,
+            spentText = "Rp26.000",
+            totalText = "Rp40.000",
+            budgetProgress = 0.65f,
+            menus = DummyData.foodLogs.take(4).map { it.toMenuUi() },
+            onKaloriClick = {},
+            onBudgetClick = {},
+            onNotificationClick = {},
+            onSettingsClick = {},
+            onSeeAll = {},
+            onCameraClick = {},
+            onTestDetailClick = {}
         )
     }
 }
