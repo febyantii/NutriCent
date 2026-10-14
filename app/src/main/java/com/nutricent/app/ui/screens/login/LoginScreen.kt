@@ -1,6 +1,7 @@
 
 package com.nutricent.app.ui.screens.login
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -34,22 +37,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nutricent.app.R
 import com.nutricent.app.ui.theme.NutriCentTheme
+import com.nutricent.app.ui.theme.loginBackground
+import com.nutricent.app.ui.theme.loginDecoration
+import com.nutricent.app.ui.theme.loginDecorationBottom
+import com.nutricent.app.ui.theme.loginDecorationLight
+import com.nutricent.app.ui.theme.loginDecorationPale
+import com.nutricent.app.ui.theme.loginDarkGreen
+import com.nutricent.app.ui.theme.loginBorder
+import com.nutricent.app.ui.theme.loginGreen
+import com.nutricent.app.ui.theme.loginSoftGreen
 import com.nutricent.app.viewmodel.AuthMode
 import com.nutricent.app.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
-
-private val MintBackground = Color(0xFFF4FCF9)
-private val MintDecoration = Color(0xFFDDF7F1)
-private val PaleGreen = Color(0xFFE8F8F3)
-private val NutriGreen = Color(0xFF4DA181)
-private val DarkGreen = Color(0xFF145447)
-private val MintBorder = Color(0xFFBDEBE8)
 
 @Composable
 fun LoginScreen(
@@ -59,12 +61,13 @@ fun LoginScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
+    val colors = MaterialTheme.colorScheme
 
     // Background dengan bercak pastel dekoratif
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MintBackground)
+            .background(colors.loginBackground)
     ) {
         // Bercak kiri atas
         Box(
@@ -72,7 +75,7 @@ fun LoginScreen(
                 .offset(x = (-48).dp, y = 75.dp)
                 .size(125.dp)
                 .clip(CircleShape)
-                .background(Color(0xFFE3FAF4))
+                .background(colors.loginDecorationLight)
         )
 
         // Bercak kanan atas
@@ -82,7 +85,7 @@ fun LoginScreen(
                 .offset(x = 35.dp, y = 150.dp)
                 .size(100.dp)
                 .clip(CircleShape)
-                .background(Color(0xFFE9FAF6))
+                .background(colors.loginDecorationPale)
         )
 
         // Bercak kiri bawah
@@ -93,7 +96,7 @@ fun LoginScreen(
                 .size(58.dp)
                 .rotate(-35f)
                 .clip(RoundedCornerShape(50))
-                .background(MintDecoration)
+                .background(colors.loginDecoration)
         )
 
         // Bercak kanan bawah
@@ -104,7 +107,7 @@ fun LoginScreen(
                 .size(105.dp)
                 .rotate(40f)
                 .clip(RoundedCornerShape(50))
-                .background(Color(0xFFDFF6F2))
+                .background(colors.loginDecorationBottom)
         )
 
         Scaffold(
@@ -114,7 +117,6 @@ fun LoginScreen(
                 SnackbarHost(hostState = snackbarHostState)
             }
         ) { innerPadding ->
-
 
             Column(
                 modifier = Modifier
@@ -126,14 +128,15 @@ fun LoginScreen(
                     .padding(top = 16.dp, bottom = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 // ---------- LOGO NUTRICENT ----------
                 Image(
-                    painter = painterResource(id = R.drawable.logo_nutricent),
+                    painter = painterResource(
+                        id = R.drawable.logo_nutricent
+                    ),
                     contentDescription = "Logo NutriCent",
                     modifier = Modifier
-                        .width(220.dp)    // sebelumnya 190.dp
-                        .height(60.dp),   // sebelumnya 52.dp
+                        .width(220.dp)
+                        .height(60.dp),
                     contentScale = ContentScale.Fit
                 )
 
@@ -141,9 +144,11 @@ fun LoginScreen(
 
                 // ---------- MASKOT ----------
                 Image(
-                    painter = painterResource(id = R.drawable.maskot_nutricent),
+                    painter = painterResource(
+                        id = R.drawable.maskot_nutricent
+                    ),
                     contentDescription = "Maskot NutriCent",
-                    modifier = Modifier.size(210.dp), // sebelumnya 180.dp
+                    modifier = Modifier.size(210.dp),
                     contentScale = ContentScale.Fit
                 )
 
@@ -152,25 +157,26 @@ fun LoginScreen(
                 // ---------- SLOGAN ----------
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.colorScheme.onBackground
+                        pushStyle(
+                            SpanStyle(
+                                color = colors.onBackground
                             )
-                        ) {
-                            append("Happy Meals,\n")
-                        }
+                        )
+                        append("Happy Meals,\n")
+                        pop()
 
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.colorScheme.tertiary
+                        pushStyle(
+                            SpanStyle(
+                                color = colors.tertiary
                             )
-                        ) {
-                            append("Happy Wallet")
-                        }
+                        )
+                        append("Happy Wallet")
+                        pop()
                     },
                     style = MaterialTheme.typography.headlineSmall,
                     textAlign = TextAlign.Center,
-                    lineHeight = MaterialTheme.typography.headlineSmall.lineHeight
+                    lineHeight = MaterialTheme.typography
+                        .headlineSmall.lineHeight
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -184,12 +190,16 @@ fun LoginScreen(
                         .onFocusChanged {
                             viewModel.onEmailFocusChange(it.isFocused)
                         },
-                    label = { Text("Email") },
+                    label = {
+                        Text("Email")
+                    },
                     singleLine = true,
                     enabled = !viewModel.isLoading,
                     isError = viewModel.emailError != null,
                     supportingText = viewModel.emailError?.let { error ->
-                        { Text(error) }
+                        {
+                            Text(error)
+                        }
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
@@ -197,10 +207,10 @@ fun LoginScreen(
                     ),
                     shape = RoundedCornerShape(28.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MintBorder,
-                        focusedBorderColor = NutriGreen,
-                        unfocusedContainerColor = Color.White,
-                        focusedContainerColor = Color.White
+                        unfocusedBorderColor = colors.loginBorder,
+                        focusedBorderColor = colors.loginGreen,
+                        unfocusedContainerColor = colors.surface,
+                        focusedContainerColor = colors.surface
                     )
                 )
 
@@ -215,12 +225,16 @@ fun LoginScreen(
                         .onFocusChanged {
                             viewModel.onPasswordFocusChange(it.isFocused)
                         },
-                    label = { Text("Password") },
+                    label = {
+                        Text("Password")
+                    },
                     singleLine = true,
                     enabled = !viewModel.isLoading,
                     isError = viewModel.passwordError != null,
                     supportingText = viewModel.passwordError?.let { error ->
-                        { Text(error) }
+                        {
+                            Text(error)
+                        }
                     },
                     visualTransformation = if (viewModel.passwordVisible) {
                         VisualTransformation.None
@@ -262,20 +276,21 @@ fun LoginScreen(
                     },
                     shape = RoundedCornerShape(28.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MintBorder,
-                        focusedBorderColor = NutriGreen,
-                        unfocusedContainerColor = Color.White,
-                        focusedContainerColor = Color.White
+                        unfocusedBorderColor = colors.loginBorder,
+                        focusedBorderColor = colors.loginGreen,
+                        unfocusedContainerColor = colors.surface,
+                        focusedContainerColor = colors.surface
                     )
                 )
 
                 // ---------- ERROR LOGIN / SIGNUP ----------
                 viewModel.authError?.let { error ->
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Text(
                         text = error,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.error,
+                        color = colors.error,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -297,7 +312,8 @@ fun LoginScreen(
                         .height(48.dp),
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = NutriGreen
+                        containerColor = colors.loginGreen,
+                        contentColor = colors.onPrimary
                     )
                 ) {
                     if (
@@ -307,12 +323,11 @@ fun LoginScreen(
                         CircularProgressIndicator(
                             modifier = Modifier.size(22.dp),
                             strokeWidth = 2.dp,
-                            color = Color.White
+                            color = colors.onPrimary
                         )
                     } else {
                         Text(
                             "Log In",
-                            color = Color.White,
                             style = MaterialTheme.typography.labelLarge
                         )
                     }
@@ -335,12 +350,12 @@ fun LoginScreen(
                         .height(48.dp),
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = Color.White,
-                        contentColor = DarkGreen
+                        containerColor = colors.surface,
+                        contentColor = colors.loginDarkGreen
                     ),
-                    border = androidx.compose.foundation.BorderStroke(
+                    border = BorderStroke(
                         1.dp,
-                        MintBorder
+                        colors.loginBorder
                     )
                 ) {
                     if (
@@ -350,7 +365,7 @@ fun LoginScreen(
                         CircularProgressIndicator(
                             modifier = Modifier.size(22.dp),
                             strokeWidth = 2.dp,
-                            color = NutriGreen
+                            color = colors.loginGreen
                         )
                     } else {
                         Text(
@@ -369,19 +384,19 @@ fun LoginScreen(
                 ) {
                     HorizontalDivider(
                         modifier = Modifier.weight(1f),
-                        color = MintBorder
+                        color = colors.loginBorder
                     )
 
                     Text(
                         text = "atau",
                         modifier = Modifier.padding(horizontal = 12.dp),
                         style = MaterialTheme.typography.bodySmall,
-                        color = DarkGreen
+                        color = colors.loginDarkGreen
                     )
 
                     HorizontalDivider(
                         modifier = Modifier.weight(1f),
-                        color = MintBorder
+                        color = colors.loginBorder
                     )
                 }
 
@@ -402,8 +417,8 @@ fun LoginScreen(
                         .height(48.dp),
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = PaleGreen,
-                        contentColor = DarkGreen
+                        containerColor = colors.loginSoftGreen,
+                        contentColor = colors.loginDarkGreen
                     ),
                     border = null
                 ) {
@@ -416,6 +431,7 @@ fun LoginScreen(
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
                         )
+
                         Text(
                             "Continue with Google",
                             style = MaterialTheme.typography.labelLarge

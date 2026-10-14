@@ -1,5 +1,6 @@
 package com.nutricent.app.ui.screens.journal
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,10 +10,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import com.nutricent.app.ui.theme.HomeNotificationRed
+
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -20,38 +29,47 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 import com.nutricent.app.R
 import com.nutricent.app.model.FoodLog
 import com.nutricent.app.model.MealType
 import com.nutricent.app.ui.components.AppBottomBar
 import com.nutricent.app.ui.components.BottomTab
+import com.nutricent.app.ui.theme.NutriCentTheme
+import com.nutricent.app.ui.theme.journalActionRed
+import com.nutricent.app.ui.theme.journalBorder
+import com.nutricent.app.ui.theme.journalDarkGreen
+import com.nutricent.app.ui.theme.journalDateBackground
+import com.nutricent.app.ui.theme.journalGray
+import com.nutricent.app.ui.theme.journalGreen
+import com.nutricent.app.ui.theme.journalMenuIcon
+import com.nutricent.app.ui.theme.journalMint
+import com.nutricent.app.ui.theme.journalSubtitle
+import com.nutricent.app.ui.theme.journalText
 import com.nutricent.app.viewmodel.FoodLogViewModel
+
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-private val JournalGreen = Color(0xFF299D75)
-private val JournalDarkGreen = Color(0xFF145448)
-private val JournalMint = Color(0xFFE6F5EC)
-private val JournalBorder = Color(0xFFD4EBE0)
-private val JournalText = Color(0xFF263D35)
-private val JournalGray = Color(0xFF879990)
 
 /** Journal screen intended to replace the repository's Journal placeholder. */
 @Composable
@@ -73,7 +91,8 @@ fun JournalScreen(
     val calorieTarget = foodLogViewModel.userProfile.dailyCalorieTarget
 
     Scaffold(
-        containerColor = Color.White,
+        // Tetap putih seperti desain jurnal sebelumnya.
+        containerColor = MaterialTheme.colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             AppBottomBar(
@@ -101,7 +120,9 @@ fun JournalScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            item { JournalHeader() }
+            item {
+                JournalHeader()
+            }
 
             item {
                 JournalDateSelector(
@@ -111,10 +132,13 @@ fun JournalScreen(
             }
 
             if (foods.isEmpty()) {
-                item { JournalEmptyState() }
+                item {
+                    JournalEmptyState()
+                }
             } else {
                 MealType.values().forEach { mealType ->
                     val meals = foodLogViewModel.foodsOf(mealType)
+
                     if (meals.isNotEmpty()) {
                         items(
                             items = meals,
@@ -168,8 +192,18 @@ fun JournalScreen(
     selectedFood?.let { food ->
         AlertDialog(
             onDismissRequest = { selectedFood = null },
-            title = { Text("Kelola Log", color = JournalDarkGreen) },
-            text = { Text("Pilih tindakan untuk ${food.name}.") },
+            title = {
+                Text(
+                    "Kelola Log",
+                    color = MaterialTheme.colorScheme.journalDarkGreen
+                )
+            },
+            text = {
+                Text(
+                    "Pilih tindakan untuk ${food.name}.",
+                    color = MaterialTheme.colorScheme.journalText
+                )
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -177,7 +211,10 @@ fun JournalScreen(
                         onNavigateToDetail(food.id)
                     }
                 ) {
-                    Text("Lihat Detail", color = JournalGreen)
+                    Text(
+                        "Lihat Detail",
+                        color = MaterialTheme.colorScheme.journalGreen
+                    )
                 }
             },
             dismissButton = {
@@ -186,75 +223,136 @@ fun JournalScreen(
                         onClick = {
                             foodLogViewModel.deleteFood(food.id)
                             selectedFood = null
+
                             scope.launch {
-                                snackbarHostState.showSnackbar("Log makanan dihapus")
+                                snackbarHostState.showSnackbar(
+                                    "Log makanan dihapus"
+                                )
                             }
                         }
                     ) {
-                        Text("Hapus", color = Color(0xFFC13D45))
+                        Text(
+                            "Hapus",
+                            color = MaterialTheme.colorScheme.journalActionRed
+                        )
                     }
-                    TextButton(onClick = { selectedFood = null }) {
-                        Text("Batal", color = JournalGray)
+
+                    TextButton(
+                        onClick = { selectedFood = null }
+                    ) {
+                        Text(
+                            "Batal",
+                            color = MaterialTheme.colorScheme.journalGray
+                        )
                     }
                 }
             },
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         )
     }
 }
 
+
 @Composable
-private fun JournalHeader() {
+private fun JournalHeader(
+    onNotificationClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {}
+) {
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("🌿", fontSize = 25.sp)
-                Spacer(Modifier.width(5.dp))
-                Text(
-                    text = "NutriCent",
-                    fontSize = 21.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = JournalDarkGreen
-                )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("♧", color = JournalDarkGreen, fontSize = 24.sp)
-                Spacer(Modifier.width(18.dp))
-                Text("⚙", color = JournalText, fontSize = 22.sp)
+            Image(
+                painter = painterResource(R.drawable.logo_nutricent),
+                contentDescription = "Logo NutriCent",
+                contentScale = ContentScale.Fit,
+                alignment = Alignment.CenterStart,
+                modifier = Modifier
+                    .height(65.dp)
+                    .widthIn(max = 150.dp)
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Ikon notifikasi sama seperti halaman Home.
+                IconButton(
+                    onClick = onNotificationClick
+                ) {
+                    Box {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Notifikasi",
+                            tint = MaterialTheme.colorScheme.journalDarkGreen
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .clip(CircleShape)
+                                .background(HomeNotificationRed)
+                                .align(Alignment.TopEnd)
+                        )
+                    }
+                }
+
+                // Ikon settings sama seperti halaman Home.
+                IconButton(
+                    onClick = onSettingsClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Pengaturan",
+                        tint = MaterialTheme.colorScheme.journalDarkGreen
+                    )
+                }
             }
         }
 
         Spacer(Modifier.height(22.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = "Jurnal Harian",
                 fontSize = 25.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = JournalDarkGreen,
+                color = MaterialTheme.colorScheme.journalDarkGreen,
                 letterSpacing = (-0.7).sp
             )
+
             Spacer(Modifier.width(6.dp))
-            Text("⌁", fontSize = 19.sp, color = JournalGreen)
+
+            Text(
+                text = "⌁",
+                fontSize = 19.sp,
+                color = MaterialTheme.colorScheme.journalGreen
+            )
         }
+
         Spacer(Modifier.height(4.dp))
+
         Text(
             text = "Lacak asupan makanan dan pengeluaranmu setiap hari!",
             fontSize = 12.sp,
-            color = Color(0xFF71847B)
+            color = MaterialTheme.colorScheme.journalSubtitle
         )
     }
 }
+
 
 @Composable
 private fun JournalDateSelector(
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit
 ) {
-    val weekStart = selectedDate.minusDays((selectedDate.dayOfWeek.value - 1).toLong())
+    val weekStart = selectedDate.minusDays(
+        (selectedDate.dayOfWeek.value - 1).toLong()
+    )
+
     val days = listOf("Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min")
 
     Row(
@@ -265,45 +363,77 @@ private fun JournalDateSelector(
         Box(
             modifier = Modifier
                 .size(27.dp)
-                .background(JournalMint, CircleShape)
-                .clickable { onDateSelected(selectedDate.minusWeeks(1)) },
+                .background(
+                    MaterialTheme.colorScheme.journalMint,
+                    CircleShape
+                )
+                .clickable {
+                    onDateSelected(selectedDate.minusWeeks(1))
+                },
             contentAlignment = Alignment.Center
         ) {
-            Text("‹", color = JournalGreen, fontSize = 22.sp)
+            Text(
+                "‹",
+                color = MaterialTheme.colorScheme.journalGreen,
+                fontSize = 22.sp
+            )
         }
 
         days.forEachIndexed { index, day ->
             val date = weekStart.plusDays(index.toLong())
             val chosen = date == selectedDate
+
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .background(
-                        if (chosen) JournalDarkGreen else Color(0xFFF0F6F2),
+                        if (chosen) {
+                            MaterialTheme.colorScheme.journalDarkGreen
+                        } else {
+                            MaterialTheme.colorScheme.journalDateBackground
+                        },
                         RoundedCornerShape(12.dp)
                     )
-                    .clickable { onDateSelected(date) }
+                    .clickable {
+                        onDateSelected(date)
+                    }
                     .padding(vertical = 9.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = day,
                     fontSize = 10.sp,
-                    color = if (chosen) Color.White else JournalGray
+                    color = if (chosen) {
+                        androidx.compose.ui.graphics.Color.White
+                    } else {
+                        MaterialTheme.colorScheme.journalGray
+                    }
                 )
+
                 Spacer(Modifier.height(3.dp))
+
                 Text(
                     text = date.dayOfMonth.toString(),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (chosen) Color.White else JournalText
+                    color = if (chosen) {
+                        androidx.compose.ui.graphics.Color.White
+                    } else {
+                        MaterialTheme.colorScheme.journalText
+                    }
                 )
+
                 Spacer(Modifier.height(3.dp))
+
                 Box(
                     Modifier
                         .size(4.dp)
                         .background(
-                            if (chosen) Color.White else Color.Transparent,
+                            if (chosen) {
+                                androidx.compose.ui.graphics.Color.White
+                            } else {
+                                androidx.compose.ui.graphics.Color.Transparent
+                            },
                             CircleShape
                         )
                 )
@@ -313,14 +443,24 @@ private fun JournalDateSelector(
         Box(
             modifier = Modifier
                 .size(27.dp)
-                .background(JournalMint, CircleShape)
-                .clickable { onDateSelected(selectedDate.plusWeeks(1)) },
+                .background(
+                    MaterialTheme.colorScheme.journalMint,
+                    CircleShape
+                )
+                .clickable {
+                    onDateSelected(selectedDate.plusWeeks(1))
+                },
             contentAlignment = Alignment.Center
         ) {
-            Text("›", color = JournalGreen, fontSize = 22.sp)
+            Text(
+                "›",
+                color = MaterialTheme.colorScheme.journalGreen,
+                fontSize = 22.sp
+            )
         }
     }
 }
+
 
 @Composable
 private fun JournalFoodCard(
@@ -332,41 +472,77 @@ private fun JournalFoodCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, JournalBorder, RoundedCornerShape(17.dp)),
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.journalBorder,
+                RoundedCornerShape(17.dp)
+            ),
         shape = RoundedCornerShape(17.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 1.dp
+        )
     ) {
         Column(Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { expanded = !expanded },
+                    .clickable {
+                        expanded = !expanded
+                    },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = mealIcon(food.mealType),
                     fontSize = 17.sp,
-                    color = JournalGreen
+                    color = MaterialTheme.colorScheme.journalGreen
                 )
+
                 Spacer(Modifier.width(8.dp))
+
                 Text(
                     text = displayMealName(food.mealType),
                     modifier = Modifier.weight(1f),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
-                    color = JournalText
+                    color = MaterialTheme.colorScheme.journalText
                 )
-                Text("${food.calories} kcal", fontSize = 10.sp, color = JournalDarkGreen)
-                Text(" • ", fontSize = 10.sp, color = JournalBorder)
-                Text(formatJournalRupiah(food.price), fontSize = 10.sp, color = JournalDarkGreen)
+
+                Text(
+                    "${food.calories} kcal",
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.journalDarkGreen
+                )
+
+                Text(
+                    " • ",
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.journalBorder
+                )
+
+                Text(
+                    formatJournalRupiah(food.price),
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.journalDarkGreen
+                )
+
                 Spacer(Modifier.width(5.dp))
-                Text(if (expanded) "⌃" else "⌄", fontSize = 15.sp, color = JournalGray)
+
+                Text(
+                    if (expanded) "⌃" else "⌄",
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.journalGray
+                )
             }
 
             if (expanded) {
                 Spacer(Modifier.height(11.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Image(
                         painter = painterResource(id = food.imageRes),
                         contentDescription = food.name,
@@ -374,33 +550,48 @@ private fun JournalFoodCard(
                         modifier = Modifier
                             .size(65.dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(JournalMint)
+                            .background(
+                                MaterialTheme.colorScheme.journalMint
+                            )
                     )
+
                     Spacer(Modifier.width(12.dp))
+
                     Column(Modifier.weight(1f)) {
                         Text(
                             text = food.name,
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
-                            color = JournalText
+                            color = MaterialTheme.colorScheme.journalText
                         )
+
                         Spacer(Modifier.height(4.dp))
+
                         Text(
-                            text = food.notes.ifBlank { "Catatan konsumsi harian" },
+                            text = food.notes.ifBlank {
+                                "Catatan konsumsi harian"
+                            },
                             fontSize = 10.sp,
-                            color = JournalGray
+                            color = MaterialTheme.colorScheme.journalGray
                         )
+
                         Spacer(Modifier.height(8.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
                             JournalFoodTag("${food.calories} kcal")
                             JournalFoodTag(formatJournalRupiah(food.price))
                         }
                     }
+
                     Text(
                         text = "⋮",
-                        modifier = Modifier.clickable { onManage() },
+                        modifier = Modifier.clickable {
+                            onManage()
+                        },
                         fontSize = 22.sp,
-                        color = Color(0xFF8DA4BD)
+                        color = MaterialTheme.colorScheme.journalMenuIcon
                     )
                 }
             }
@@ -408,17 +599,25 @@ private fun JournalFoodCard(
     }
 }
 
+
 @Composable
 private fun JournalFoodTag(text: String) {
     Text(
         text = "◆  $text",
         modifier = Modifier
-            .background(JournalMint, RoundedCornerShape(20.dp))
-            .padding(horizontal = 8.dp, vertical = 5.dp),
+            .background(
+                MaterialTheme.colorScheme.journalMint,
+                RoundedCornerShape(20.dp)
+            )
+            .padding(
+                horizontal = 8.dp,
+                vertical = 5.dp
+            ),
         fontSize = 9.sp,
-        color = JournalDarkGreen
+        color = MaterialTheme.colorScheme.journalDarkGreen
     )
 }
+
 
 @Composable
 private fun JournalSummary(
@@ -430,8 +629,15 @@ private fun JournalSummary(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, JournalBorder, RoundedCornerShape(17.dp))
-            .background(Color.White, RoundedCornerShape(17.dp))
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.journalBorder,
+                RoundedCornerShape(17.dp)
+            )
+            .background(
+                MaterialTheme.colorScheme.surface,
+                RoundedCornerShape(17.dp)
+            )
             .padding(16.dp)
     ) {
         Row(
@@ -439,82 +645,140 @@ private fun JournalSummary(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("♨", color = JournalGreen, fontSize = 21.sp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "♨",
+                        color = MaterialTheme.colorScheme.journalGreen,
+                        fontSize = 21.sp
+                    )
+
                     Spacer(Modifier.width(8.dp))
-                    Text("Total Kalori", fontSize = 12.sp, color = JournalGray)
+
+                    Text(
+                        "Total Kalori",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.journalGray
+                    )
                 }
+
                 Spacer(Modifier.height(7.dp))
-                Row(verticalAlignment = Alignment.Bottom) {
+
+                Row(
+                    verticalAlignment = Alignment.Bottom
+                ) {
                     Text(
                         formatJournalNumber(calories),
                         fontSize = 21.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = JournalDarkGreen
+                        color = MaterialTheme.colorScheme.journalDarkGreen
                     )
+
                     Text(
                         " /${formatJournalNumber(calorieTarget)} kcal",
                         fontSize = 12.sp,
-                        color = JournalGray
+                        color = MaterialTheme.colorScheme.journalGray
                     )
                 }
+
                 Spacer(Modifier.height(10.dp))
+
                 Box(
                     Modifier
                         .fillMaxWidth()
                         .height(7.dp)
-                        .background(JournalMint, CircleShape)
+                        .background(
+                            MaterialTheme.colorScheme.journalMint,
+                            CircleShape
+                        )
                 ) {
                     Box(
                         Modifier
                             .fillMaxWidth(
-                                (calories.toFloat() / calorieTarget.coerceAtLeast(1))
-                                    .coerceIn(0f, 1f)
+                                (
+                                        calories.toFloat() /
+                                                calorieTarget.coerceAtLeast(1)
+                                        ).coerceIn(0f, 1f)
                             )
                             .fillMaxHeight()
-                            .background(JournalGreen, CircleShape)
+                            .background(
+                                MaterialTheme.colorScheme.journalGreen,
+                                CircleShape
+                            )
                     )
                 }
             }
+
             Spacer(Modifier.width(12.dp))
+
             Box(
                 Modifier
                     .width(1.dp)
                     .height(72.dp)
-                    .background(JournalBorder)
+                    .background(
+                        MaterialTheme.colorScheme.journalBorder
+                    )
             )
+
             Spacer(Modifier.width(12.dp))
+
             Column(Modifier.weight(0.85f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("▣", color = JournalGreen, fontSize = 20.sp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "▣",
+                        color = MaterialTheme.colorScheme.journalGreen,
+                        fontSize = 20.sp
+                    )
+
                     Spacer(Modifier.width(7.dp))
-                    Text("Total Pengeluaran", fontSize = 11.sp, color = JournalGray)
+
+                    Text(
+                        "Total Pengeluaran",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.journalGray
+                    )
                 }
+
                 Spacer(Modifier.height(9.dp))
+
                 Text(
                     formatJournalRupiah(expense),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = JournalDarkGreen
+                    color = MaterialTheme.colorScheme.journalDarkGreen
                 )
             }
         }
 
         Spacer(Modifier.height(20.dp))
+
         OutlinedButton(
             onClick = onAddManual,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(43.dp),
             shape = RoundedCornerShape(12.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, JournalGreen),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = JournalDarkGreen),
+            border = BorderStroke(
+                1.dp,
+                MaterialTheme.colorScheme.journalGreen
+            ),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = MaterialTheme.colorScheme.journalDarkGreen
+            ),
             contentPadding = PaddingValues(8.dp)
         ) {
-            Text("+  Add Manual", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+            Text(
+                "+  Add Manual",
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }
+
 
 @Composable
 private fun JournalAddFoodDialog(
@@ -529,31 +793,46 @@ private fun JournalAddFoodDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("Tambah Log", color = JournalDarkGreen, fontWeight = FontWeight.Bold)
+            Text(
+                "Tambah Log",
+                color = MaterialTheme.colorScheme.journalDarkGreen,
+                fontWeight = FontWeight.Bold
+            )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 OutlinedTextField(
                     value = category,
                     onValueChange = { category = it },
-                    label = { Text("Kategori: Sarapan/Makan Siang/Makan Malam/Camilan") },
+                    label = {
+                        Text("Kategori: Sarapan/Makan Siang/Makan Malam/Camilan")
+                    },
                     singleLine = true
                 )
+
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text("Nama makanan") },
                     singleLine = true
                 )
+
                 OutlinedTextField(
                     value = calories,
-                    onValueChange = { calories = it.filter(Char::isDigit) },
+                    onValueChange = {
+                        calories = it.filter(Char::isDigit)
+                    },
                     label = { Text("Kalori (kcal)") },
                     singleLine = true
                 )
+
                 OutlinedTextField(
                     value = price,
-                    onValueChange = { price = it.filter(Char::isDigit) },
+                    onValueChange = {
+                        price = it.filter(Char::isDigit)
+                    },
                     label = { Text("Harga (Rupiah)") },
                     singleLine = true
                 )
@@ -572,17 +851,24 @@ private fun JournalAddFoodDialog(
                     }
                 }
             ) {
-                Text("Simpan", color = JournalGreen)
+                Text(
+                    "Simpan",
+                    color = MaterialTheme.colorScheme.journalGreen
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Batal", color = JournalGray)
+                Text(
+                    "Batal",
+                    color = MaterialTheme.colorScheme.journalGray
+                )
             }
         },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.surface
     )
 }
+
 
 @Composable
 private fun JournalEmptyState() {
@@ -593,23 +879,32 @@ private fun JournalEmptyState() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("🍃", fontSize = 38.sp)
+
         Spacer(Modifier.height(8.dp))
+
         Text(
             "Belum ada catatan makanan",
-            color = JournalDarkGreen,
+            color = MaterialTheme.colorScheme.journalDarkGreen,
             fontWeight = FontWeight.Bold
         )
+
         Text(
             "Tambah log untuk tanggal yang dipilih.",
             fontSize = 12.sp,
-            color = JournalGray
+            color = MaterialTheme.colorScheme.journalGray
         )
     }
 }
 
+
 private fun displayMealName(mealType: MealType): String {
-    return if (mealType == MealType.SNACK) "Camilan" else mealType.label
+    return if (mealType == MealType.SNACK) {
+        "Camilan"
+    } else {
+        mealType.label
+    }
 }
+
 
 private fun mealIcon(mealType: MealType): String {
     return when (mealType) {
@@ -619,6 +914,7 @@ private fun mealIcon(mealType: MealType): String {
         MealType.SNACK -> "▣"
     }
 }
+
 
 private fun parseMealType(value: String): MealType {
     return when (value.trim().lowercase()) {
@@ -630,9 +926,11 @@ private fun parseMealType(value: String): MealType {
     }
 }
 
+
 private fun formatJournalRupiah(amount: Int): String {
     return "Rp${formatJournalNumber(amount)}"
 }
+
 
 private fun formatJournalNumber(number: Int): String {
     return number.toString()
@@ -640,4 +938,24 @@ private fun formatJournalNumber(number: Int): String {
         .chunked(3)
         .joinToString(".")
         .reversed()
+}
+
+
+@Preview(
+    name = "NutriCent - Journal Screen",
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+private fun JournalScreenPreview() {
+    NutriCentTheme {
+        val foodLogViewModel: FoodLogViewModel = viewModel()
+
+        JournalScreen(
+            foodLogViewModel = foodLogViewModel,
+            onNavigateToHome = {},
+            onNavigateToScanner = {},
+            onNavigateToDetail = {}
+        )
+    }
 }

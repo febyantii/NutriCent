@@ -1,3 +1,4 @@
+
 package com.nutricent.app.ui.screens.home
 
 import androidx.annotation.DrawableRes
@@ -40,28 +41,42 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.nutricent.app.R
 import com.nutricent.app.data.DummyData
 import com.nutricent.app.model.FoodLog
 import com.nutricent.app.model.MealType
 import com.nutricent.app.ui.components.AppBottomBar
 import com.nutricent.app.ui.components.BottomTab
+import com.nutricent.app.ui.theme.BreakfastBackground
+import com.nutricent.app.ui.theme.BreakfastBorder
+import com.nutricent.app.ui.theme.BreakfastChip
+import com.nutricent.app.ui.theme.DinnerBackground
+import com.nutricent.app.ui.theme.DinnerBorder
+import com.nutricent.app.ui.theme.DinnerChip
+import com.nutricent.app.ui.theme.HomeGreenSoft
+import com.nutricent.app.ui.theme.HomeGreenTrack
+import com.nutricent.app.ui.theme.HomeNotificationRed
+import com.nutricent.app.ui.theme.HomeRecommendationYellow
+import com.nutricent.app.ui.theme.HomeTextSecondary
+import com.nutricent.app.ui.theme.LunchBackground
+import com.nutricent.app.ui.theme.LunchBorder
+import com.nutricent.app.ui.theme.LunchChip
+import com.nutricent.app.ui.theme.NutriBorderColor
+import com.nutricent.app.ui.theme.NutriButtonGreen
+import com.nutricent.app.ui.theme.NutriCentTheme
+import com.nutricent.app.ui.theme.NutriDarkGreen
+import com.nutricent.app.ui.theme.NutriScreenBackground
+import com.nutricent.app.ui.theme.SnackBackground
+import com.nutricent.app.ui.theme.SnackBorder
+import com.nutricent.app.ui.theme.SnackChip
 import com.nutricent.app.util.formatRupiah
 import com.nutricent.app.viewmodel.FoodLogViewModel
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
-import com.nutricent.app.R
-
-
-// ---------- Warna ----------
-private val GreenPrimary = Color(0xFF3E9E75)
-private val GreenDark = Color(0xFF1F4D3A)
-private val GreenSoft = Color(0xFFF3FAF6)
-private val GreenBorder = Color(0xFFD3EBDD)
-private val GreenTrack = Color(0xFFD6F0E2)
-private val TextGray = Color(0xFF6B7280)
 
 // ---------- Model UI untuk kartu Menu Hari Ini ----------
+
 data class MenuItemUi(
     val title: String,
     val foodName: String,
@@ -72,27 +87,54 @@ data class MenuItemUi(
     @param:DrawableRes val imageRes: Int? = null
 )
 
-/** Ubah data makanan (DummyData.todayMenu) jadi tampilan kartu sesuai jenis makannya. */
+/**
+ * Mengubah data makanan menjadi tampilan kartu sesuai jenis makanan.
+ * Seluruh warna kartu berasal dari Color.kt.
+ */
 private fun FoodLog.toMenuUi(): MenuItemUi = when (mealType) {
     MealType.BREAKFAST -> MenuItemUi(
-        "Breakfast", name, calories,
-        Color(0xFFFFF9DB), Color(0xFFF3D77A), Color(0xFFFFEFB0), imageRes
+        title = "Breakfast",
+        foodName = name,
+        kcal = calories,
+        background = BreakfastBackground,
+        border = BreakfastBorder,
+        chipColor = BreakfastChip,
+        imageRes = imageRes
     )
+
     MealType.LUNCH -> MenuItemUi(
-        "Lunch", name, calories,
-        Color(0xFFE9F8EF), Color(0xFF8ED1AC), Color(0xFFCDEEDA), imageRes
+        title = "Lunch",
+        foodName = name,
+        kcal = calories,
+        background = LunchBackground,
+        border = LunchBorder,
+        chipColor = LunchChip,
+        imageRes = imageRes
     )
+
     MealType.DINNER -> MenuItemUi(
-        "Dinner", name, calories,
-        Color(0xFFF3EBFF), Color(0xFFC7A6FF), Color(0xFFE2D0FF), imageRes
+        title = "Dinner",
+        foodName = name,
+        kcal = calories,
+        background = DinnerBackground,
+        border = DinnerBorder,
+        chipColor = DinnerChip,
+        imageRes = imageRes
     )
+
     else -> MenuItemUi(
-        "Snack", name, calories,
-        Color(0xFFFFEEE6), Color(0xFFF5B79A), Color(0xFFFFD9C6), imageRes
+        title = "Snack",
+        foodName = name,
+        kcal = calories,
+        background = SnackBackground,
+        border = SnackBorder,
+        chipColor = SnackChip,
+        imageRes = imageRes
     )
 }
 
-// ---------- Screen (signature jangan diubah, sudah terhubung ke AppNavHost) ----------
+// ---------- Home Screen ----------
+
 @Composable
 fun HomeScreen(
     foodLogViewModel: FoodLogViewModel,
@@ -102,26 +144,48 @@ fun HomeScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
     val comingSoon: () -> Unit = {
-        scope.launch { snackbarHostState.showSnackbar("Segera hadir") }
+        scope.launch {
+            snackbarHostState.showSnackbar("Segera hadir")
+        }
     }
 
-    // --- Kalori ---
-    val kaloriDikonsumsi = foodLogViewModel.totalCalories.toDouble()
-    val kaloriTarget = foodLogViewModel.userProfile.dailyCalorieTarget.toDouble()
-    val kaloriProgress = if (kaloriTarget > 0) (kaloriDikonsumsi / kaloriTarget).toFloat() else 0f
+    // ---------- Kalori ----------
 
-    // --- Budget ---
+    val kaloriDikonsumsi =
+        foodLogViewModel.totalCalories.toDouble()
+
+    val kaloriTarget =
+        foodLogViewModel.userProfile.dailyCalorieTarget.toDouble()
+
+    val kaloriProgress =
+        if (kaloriTarget > 0) {
+            (kaloriDikonsumsi / kaloriTarget).toFloat()
+        } else {
+            0f
+        }
+
+    // ---------- Budget ----------
+
     val budgetTotal = foodLogViewModel.userProfile.dailyBudget
     val budgetSisa = foodLogViewModel.remainingBudget
     val budgetTerpakai = budgetTotal - budgetSisa
+
     val budgetProgress =
-        if (budgetTotal.toDouble() > 0) (budgetTerpakai.toDouble() / budgetTotal.toDouble()).toFloat() else 0f
+        if (budgetTotal.toDouble() > 0) {
+            (budgetTerpakai.toDouble() / budgetTotal.toDouble()).toFloat()
+        } else {
+            0f
+        }
 
     Scaffold(
-        containerColor = Color.White,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = NutriScreenBackground,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         bottomBar = {
+            // Menggunakan navbar bersama dari AppBottomBar.kt
             AppBottomBar(
                 selected = BottomTab.HOME,
                 onHomeClick = {},
@@ -136,26 +200,35 @@ fun HomeScreen(
             userName = foodLogViewModel.userProfile.name,
             consumedText = formatNumber(kaloriDikonsumsi),
             targetText = formatNumber(kaloriTarget),
-            remainingText = formatNumber((kaloriTarget - kaloriDikonsumsi).coerceAtLeast(0.0)),
+            remainingText = formatNumber(
+                (kaloriTarget - kaloriDikonsumsi).coerceAtLeast(0.0)
+            ),
             kaloriProgress = kaloriProgress,
             spentText = formatRupiah(budgetTerpakai),
             totalText = formatRupiah(budgetTotal),
             budgetProgress = budgetProgress,
-            menus = foodLogViewModel.foodsOfSelectedDate.map { it.toMenuUi() },
+            menus = foodLogViewModel.foodsOfSelectedDate.map {
+                it.toMenuUi()
+            },
             onKaloriClick = onNavigateToJournal,
             onBudgetClick = comingSoon,
             onNotificationClick = comingSoon,
             onSettingsClick = comingSoon,
             onSeeAll = onNavigateToJournal,
-            onCameraClick = { onNavigateToScanner() },
+            onCameraClick = {
+                onNavigateToScanner()
+            },
             onTestDetailClick = {
-                foodLogViewModel.foodsOfSelectedDate.firstOrNull()?.let { onNavigateToDetail(it.id) }
+                foodLogViewModel.foodsOfSelectedDate
+                    .firstOrNull()
+                    ?.let { onNavigateToDetail(it.id) }
             }
         )
     }
 }
 
-// ---------- Isi layar (tanpa ViewModel supaya bisa di-Preview) ----------
+// ---------- Isi layar ----------
+
 @Composable
 private fun HomeContent(
     modifier: Modifier = Modifier,
@@ -184,21 +257,47 @@ private fun HomeContent(
             .padding(top = 16.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        HomeTopBar(onNotificationClick, onSettingsClick)
-        GreetingRow(userName)
-        KaloriCard(consumedText, targetText, remainingText, kaloriProgress, onKaloriClick)
-        BudgetCard(spentText, totalText, budgetProgress, onBudgetClick)
-        MenuHariIniSection(menus, onSeeAll, onCameraClick)
-        RekomendasiSection("Jaga asupan protein kamu! Bisa bantu kenyang lebih lama dan menjaga massa otot.")
+        HomeTopBar(
+            onNotificationClick = onNotificationClick,
+            onSettingsClick = onSettingsClick
+        )
 
-        // Tombol tes sementara (dari stub lama). Hapus jika tidak diperlukan.
+        GreetingRow(userName = userName)
 
+        KaloriCard(
+            consumedText = consumedText,
+            targetText = targetText,
+            remainingText = remainingText,
+            progress = kaloriProgress,
+            onClick = onKaloriClick
+        )
+
+        BudgetCard(
+            spentText = spentText,
+            totalText = totalText,
+            progress = budgetProgress,
+            onClick = onBudgetClick
+        )
+
+        MenuHariIniSection(
+            menus = menus,
+            onSeeAll = onSeeAll,
+            onCameraClick = onCameraClick
+        )
+
+        RekomendasiSection(
+            text = "Jaga asupan protein kamu! Bisa bantu kenyang lebih lama dan menjaga massa otot."
+        )
     }
 }
 
 // ---------- Top bar ----------
+
 @Composable
-private fun HomeTopBar(onNotificationClick: () -> Unit, onSettingsClick: () -> Unit) {
+private fun HomeTopBar(
+    onNotificationClick: () -> Unit,
+    onSettingsClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -213,27 +312,39 @@ private fun HomeTopBar(onNotificationClick: () -> Unit, onSettingsClick: () -> U
                 .height(65.dp)
                 .widthIn(max = 150.dp)
         )
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onNotificationClick) {
                 Box {
-                    Icon(Icons.Default.Notifications, "Notifikasi", tint = GreenDark)
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = "Notifikasi",
+                        tint = NutriDarkGreen
+                    )
+
                     Box(
-                        Modifier
+                        modifier = Modifier
                             .size(8.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFFFF4D6D))
+                            .background(HomeNotificationRed)
                             .align(Alignment.TopEnd)
                     )
                 }
             }
+
             IconButton(onClick = onSettingsClick) {
-                Icon(Icons.Default.Settings, "Pengaturan", tint = GreenDark)
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Pengaturan",
+                    tint = NutriDarkGreen
+                )
             }
         }
     }
 }
 
 // ---------- Greeting ----------
+
 @Composable
 private fun GreetingRow(userName: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -241,25 +352,38 @@ private fun GreetingRow(userName: String) {
             modifier = Modifier
                 .size(52.dp)
                 .clip(CircleShape)
-                .background(GreenTrack),
+                .background(HomeGreenTrack),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                userName.take(1).uppercase(),
+                text = userName.take(1).uppercase(),
                 fontWeight = FontWeight.Bold,
-                color = GreenDark,
+                color = NutriDarkGreen,
                 fontSize = 20.sp
             )
         }
+
         Spacer(Modifier.width(12.dp))
+
         Column {
-            Text("Hai, $userName!", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = GreenDark)
-            Text("Yuk, jaga kesehatan dan keuanganmu hari ini!", fontSize = 12.sp, color = TextGray)
+            Text(
+                text = "Hai, $userName!",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = NutriDarkGreen
+            )
+
+            Text(
+                text = "Yuk, jaga kesehatan dan keuanganmu hari ini!",
+                fontSize = 12.sp,
+                color = HomeTextSecondary
+            )
         }
     }
 }
 
 // ---------- Card dasar ----------
+
 @Composable
 private fun SoftCard(
     onClick: () -> Unit = {},
@@ -269,43 +393,61 @@ private fun SoftCard(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = GreenSoft),
-        border = BorderStroke(1.dp, GreenBorder),
-        elevation = CardDefaults.cardElevation(0.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = HomeGreenSoft
+        ),
+        border = BorderStroke(1.dp, NutriBorderColor),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 0.dp
+        )
     ) {
-        Column(Modifier.padding(16.dp), content = content)
+        Column(
+            modifier = Modifier.padding(16.dp),
+            content = content
+        )
     }
 }
 
 @Composable
-private fun CardHeader(title: String, icon: @Composable () -> Unit) {
+private fun CardHeader(
+    title: String,
+    icon: @Composable () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
-            Modifier
+            modifier = Modifier
                 .size(24.dp)
                 .clip(CircleShape)
-                .background(GreenTrack),
+                .background(HomeGreenTrack),
             contentAlignment = Alignment.Center
-        ) { icon() }
+        ) {
+            icon()
+        }
+
         Spacer(Modifier.width(8.dp))
+
         Text(
-            title,
+            text = title,
             fontWeight = FontWeight.SemiBold,
-            color = GreenDark,
+            color = NutriDarkGreen,
             fontSize = 15.sp,
             modifier = Modifier.weight(1f)
         )
+
         Icon(
-            Icons.AutoMirrored.Filled.KeyboardArrowRight, null,
-            tint = TextGray, modifier = Modifier.size(18.dp)
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = HomeTextSecondary,
+            modifier = Modifier.size(18.dp)
         )
     }
 }
 
 // ---------- Kalori ----------
+
 @Composable
 private fun KaloriCard(
     consumedText: String,
@@ -315,98 +457,213 @@ private fun KaloriCard(
     onClick: () -> Unit
 ) {
     val p = progress.coerceIn(0f, 1f)
+
     SoftCard(onClick = onClick) {
-        CardHeader("Kalori") {
-            Icon(Icons.Default.Eco, null, tint = GreenPrimary, modifier = Modifier.size(14.dp))
+        CardHeader(title = "Kalori") {
+            Icon(
+                imageVector = Icons.Default.Eco,
+                contentDescription = null,
+                tint = NutriButtonGreen,
+                modifier = Modifier.size(14.dp)
+            )
         }
+
         Spacer(Modifier.height(12.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CircularProgress(progress = p, size = 88.dp, stroke = 10.dp)
+                CircularProgress(
+                    progress = p,
+                    size = 88.dp,
+                    stroke = 10.dp
+                )
+
                 Spacer(Modifier.height(6.dp))
+
                 Text(
-                    "${(p * 100).toInt()}% terpenuhi",
-                    fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = GreenDark
+                    text = "${(p * 100).toInt()}% terpenuhi",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = NutriDarkGreen
                 )
             }
+
             Spacer(Modifier.width(20.dp))
+
             Column {
                 Row(verticalAlignment = Alignment.Bottom) {
-                    Text(consumedText, fontSize = 36.sp, fontWeight = FontWeight.ExtraBold, color = GreenDark)
-                    Spacer(Modifier.width(4.dp))
                     Text(
-                        "/ $targetText kcal",
-                        fontSize = 14.sp, color = GreenDark,
+                        text = consumedText,
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = NutriDarkGreen
+                    )
+
+                    Spacer(Modifier.width(4.dp))
+
+                    Text(
+                        text = "/ $targetText kcal",
+                        fontSize = 14.sp,
+                        color = NutriDarkGreen,
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
                 }
+
                 Spacer(Modifier.height(6.dp))
-                LegendDot(GreenPrimary, "$consumedText kcal", "dikonsumsi")
+
+                LegendDot(
+                    color = NutriButtonGreen,
+                    value = "$consumedText kcal",
+                    label = "dikonsumsi"
+                )
+
                 Spacer(Modifier.height(2.dp))
-                LegendDot(GreenTrack, "$remainingText kcal", "sisa")
+
+                LegendDot(
+                    color = HomeGreenTrack,
+                    value = "$remainingText kcal",
+                    label = "sisa"
+                )
             }
         }
     }
 }
 
 @Composable
-private fun CircularProgress(progress: Float, size: Dp, stroke: Dp) {
+private fun CircularProgress(
+    progress: Float,
+    size: Dp,
+    stroke: Dp
+) {
     Canvas(Modifier.size(size)) {
         val strokePx = stroke.toPx()
-        val arcSize = Size(this.size.width - strokePx, this.size.height - strokePx)
+        val arcSize = Size(
+            width = this.size.width - strokePx,
+            height = this.size.height - strokePx
+        )
         val topLeft = Offset(strokePx / 2, strokePx / 2)
-        drawArc(GreenTrack, 0f, 360f, false, topLeft, arcSize, style = Stroke(strokePx))
+
         drawArc(
-            GreenPrimary, -90f, 360f * progress, false, topLeft, arcSize,
-            style = Stroke(strokePx, cap = StrokeCap.Round)
+            color = HomeGreenTrack,
+            startAngle = 0f,
+            sweepAngle = 360f,
+            useCenter = false,
+            topLeft = topLeft,
+            size = arcSize,
+            style = Stroke(strokePx)
+        )
+
+        drawArc(
+            color = NutriButtonGreen,
+            startAngle = -90f,
+            sweepAngle = 360f * progress.coerceIn(0f, 1f),
+            useCenter = false,
+            topLeft = topLeft,
+            size = arcSize,
+            style = Stroke(
+                width = strokePx,
+                cap = StrokeCap.Round
+            )
         )
     }
 }
 
 @Composable
-private fun LegendDot(color: Color, value: String, label: String) {
+private fun LegendDot(
+    color: Color,
+    value: String,
+    label: String
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.size(8.dp).clip(CircleShape).background(color))
+        Box(
+            modifier = Modifier
+                .size(8.dp)
+                .clip(CircleShape)
+                .background(color)
+        )
+
         Spacer(Modifier.width(6.dp))
-        Text(value, fontSize = 11.sp, color = GreenDark)
+
+        Text(
+            text = value,
+            fontSize = 11.sp,
+            color = NutriDarkGreen
+        )
+
         Spacer(Modifier.width(3.dp))
-        Text("($label)", fontSize = 11.sp, color = TextGray)
+
+        Text(
+            text = "($label)",
+            fontSize = 11.sp,
+            color = HomeTextSecondary
+        )
     }
 }
 
 // ---------- Budget ----------
+
 @Composable
-private fun BudgetCard(spentText: String, totalText: String, progress: Float, onClick: () -> Unit) {
+private fun BudgetCard(
+    spentText: String,
+    totalText: String,
+    progress: Float,
+    onClick: () -> Unit
+) {
     val p = progress.coerceIn(0f, 1f)
+
     SoftCard(onClick = onClick) {
-        CardHeader("Budget") {
-            Text("Rp", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = GreenPrimary)
+        CardHeader(title = "Budget") {
+            Text(
+                text = "Rp",
+                fontSize = 9.sp,
+                fontWeight = FontWeight.Bold,
+                color = NutriButtonGreen
+            )
         }
+
         Spacer(Modifier.height(8.dp))
-        Text(spentText, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = GreenDark)
-        Text("/ $totalText", fontSize = 12.sp, color = TextGray)
+
+        Text(
+            text = spentText,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = NutriDarkGreen
+        )
+
+        Text(
+            text = "/ $totalText",
+            fontSize = 12.sp,
+            color = HomeTextSecondary
+        )
+
         Spacer(Modifier.height(8.dp))
+
         LinearProgressIndicator(
             progress = { p },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(10.dp)
                 .clip(RoundedCornerShape(50)),
-            color = GreenPrimary,
-            trackColor = GreenTrack,
+            color = NutriButtonGreen,
+            trackColor = HomeGreenTrack,
             strokeCap = StrokeCap.Round,
             gapSize = 0.dp,
             drawStopIndicator = {}
         )
+
         Spacer(Modifier.height(6.dp))
+
         Text(
-            "${(p * 100).toInt()}% terpakai",
-            fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = GreenDark
+            text = "${(p * 100).toInt()}% terpakai",
+            fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = NutriDarkGreen
         )
     }
 }
 
 // ---------- Menu hari ini ----------
+
 @Composable
 private fun MenuHariIniSection(
     menus: List<MenuItemUi>,
@@ -421,42 +678,89 @@ private fun MenuHariIniSection(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    Modifier.size(24.dp).clip(CircleShape).background(GreenTrack),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(HomeGreenTrack),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Default.Restaurant, null, tint = GreenPrimary, modifier = Modifier.size(14.dp))
+                    Icon(
+                        imageVector = Icons.Default.Restaurant,
+                        contentDescription = null,
+                        tint = NutriButtonGreen,
+                        modifier = Modifier.size(14.dp)
+                    )
                 }
+
                 Spacer(Modifier.width(8.dp))
-                Text("Menu Hari Ini", fontWeight = FontWeight.Bold, color = GreenDark, fontSize = 16.sp)
+
+                Text(
+                    text = "Menu Hari Ini",
+                    fontWeight = FontWeight.Bold,
+                    color = NutriDarkGreen,
+                    fontSize = 16.sp
+                )
             }
-            TextButton(onClick = onSeeAll, contentPadding = PaddingValues(0.dp)) {
-                Text("Lihat Semua", fontSize = 12.sp, color = GreenDark)
+
+            TextButton(
+                onClick = onSeeAll,
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Text(
+                    text = "Lihat Semua",
+                    fontSize = 12.sp,
+                    color = NutriDarkGreen
+                )
+
                 Icon(
-                    Icons.AutoMirrored.Filled.KeyboardArrowRight, null,
-                    tint = GreenDark, modifier = Modifier.size(16.dp)
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = NutriDarkGreen,
+                    modifier = Modifier.size(16.dp)
                 )
             }
         }
+
         Spacer(Modifier.height(8.dp))
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(menus) { menu -> MenuCard(menu) { onCameraClick(menu) } }
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(menus) { menu ->
+                MenuCard(menu = menu) {
+                    onCameraClick(menu)
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun MenuCard(menu: MenuItemUi, onCameraClick: () -> Unit) {
+private fun MenuCard(
+    menu: MenuItemUi,
+    onCameraClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .width(100.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(menu.background)
-            .border(1.dp, menu.border, RoundedCornerShape(16.dp))
-            .padding(vertical = 10.dp, horizontal = 6.dp),
+            .border(
+                width = 1.dp,
+                color = menu.border,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .padding(
+                vertical = 10.dp,
+                horizontal = 6.dp
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
-            Modifier.size(64.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.7f)),
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
             if (menu.imageRes != null) {
@@ -467,72 +771,139 @@ private fun MenuCard(menu: MenuItemUi, onCameraClick: () -> Unit) {
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
-                Icon(Icons.Default.Restaurant, null, tint = GreenDark.copy(alpha = 0.6f))
+                Icon(
+                    imageVector = Icons.Default.Restaurant,
+                    contentDescription = null,
+                    tint = NutriDarkGreen.copy(alpha = 0.6f)
+                )
             }
         }
+
         Spacer(Modifier.height(8.dp))
+
         Text(
-            menu.title,
-            fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = GreenDark, maxLines = 1
+            text = menu.title,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = NutriDarkGreen,
+            maxLines = 1
         )
+
         Text(
-            menu.foodName,
-            fontSize = 10.sp, color = TextGray, maxLines = 1, overflow = TextOverflow.Ellipsis
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            "${menu.kcal} kcal",
+            text = menu.foodName,
             fontSize = 10.sp,
-            color = GreenDark,
+            color = HomeTextSecondary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        Text(
+            text = "${menu.kcal} kcal",
+            fontSize = 10.sp,
+            color = NutriDarkGreen,
             modifier = Modifier
                 .clip(RoundedCornerShape(50))
                 .background(menu.chipColor)
-                .padding(horizontal = 8.dp, vertical = 2.dp)
+                .padding(
+                    horizontal = 8.dp,
+                    vertical = 2.dp
+                )
         )
+
         Spacer(Modifier.height(8.dp))
+
         FilledIconButton(
             onClick = onCameraClick,
             modifier = Modifier.size(28.dp),
-            colors = IconButtonDefaults.filledIconButtonColors(containerColor = GreenPrimary)
+            colors = IconButtonDefaults.filledIconButtonColors(
+                containerColor = NutriButtonGreen
+            )
         ) {
-            Icon(Icons.Default.CameraAlt, "Scan", tint = Color.White, modifier = Modifier.size(14.dp))
+            Icon(
+                imageVector = Icons.Default.CameraAlt,
+                contentDescription = "Scan makanan",
+                tint = Color.White,
+                modifier = Modifier.size(14.dp)
+            )
         }
     }
 }
 
 // ---------- Rekomendasi ----------
+
 @Composable
 private fun RekomendasiSection(text: String) {
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
-                Modifier.size(24.dp).clip(CircleShape).background(Color(0xFFFFF3C4)),
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .background(HomeRecommendationYellow),
                 contentAlignment = Alignment.Center
-            ) { Text("💡", fontSize = 12.sp) }
+            ) {
+                Text(
+                    text = "💡",
+                    fontSize = 12.sp
+                )
+            }
+
             Spacer(Modifier.width(8.dp))
-            Text("Rekomendasi Hari Ini", fontWeight = FontWeight.Bold, color = GreenDark, fontSize = 16.sp)
+
+            Text(
+                text = "Rekomendasi Hari Ini",
+                fontWeight = FontWeight.Bold,
+                color = NutriDarkGreen,
+                fontSize = 16.sp
+            )
         }
+
         Spacer(Modifier.height(8.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Row(
                 modifier = Modifier
                     .weight(1f)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(GreenSoft)
-                    .border(1.dp, GreenBorder, RoundedCornerShape(16.dp))
+                    .background(HomeGreenSoft)
+                    .border(
+                        width = 1.dp,
+                        color = NutriBorderColor,
+                        shape = RoundedCornerShape(16.dp)
+                    )
                     .padding(14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
-                    Modifier.size(32.dp).clip(CircleShape).background(GreenTrack),
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(HomeGreenTrack),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(Icons.Default.Eco, null, tint = GreenPrimary, modifier = Modifier.size(18.dp))
+                    Icon(
+                        imageVector = Icons.Default.Eco,
+                        contentDescription = null,
+                        tint = NutriButtonGreen,
+                        modifier = Modifier.size(18.dp)
+                    )
                 }
+
                 Spacer(Modifier.width(10.dp))
-                Text(text, fontSize = 13.sp, color = GreenDark, maxLines = 3, overflow = TextOverflow.Ellipsis)
+
+                Text(
+                    text = text,
+                    fontSize = 13.sp,
+                    color = NutriDarkGreen,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
+
             Spacer(Modifier.width(8.dp))
+
             CentyMascot()
         }
     }
@@ -540,18 +911,26 @@ private fun RekomendasiSection(text: String) {
 
 @Composable
 private fun CentyMascot() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(96.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(96.dp)
+    ) {
         Text(
-            "Centy here!\nMinum air putih cukup hari ini, ya!",
+            text = "Centy here!\nMinum air putih cukup hari ini, ya!",
             fontSize = 8.sp,
             lineHeight = 10.sp,
-            color = GreenDark,
+            color = NutriDarkGreen,
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
-                .background(GreenSoft)
-                .border(1.dp, GreenBorder, RoundedCornerShape(12.dp))
+                .background(HomeGreenSoft)
+                .border(
+                    width = 1.dp,
+                    color = NutriBorderColor,
+                    shape = RoundedCornerShape(12.dp)
+                )
                 .padding(6.dp)
         )
+
         Spacer(Modifier.height(4.dp))
 
         Image(
@@ -564,14 +943,23 @@ private fun CentyMascot() {
 }
 
 // ---------- Helper ----------
+
 private fun formatNumber(value: Double): String =
-    NumberFormat.getNumberInstance(Locale.US).apply { maximumFractionDigits = 0 }.format(value)
+    NumberFormat.getNumberInstance(Locale.US).apply {
+        maximumFractionDigits = 0
+    }.format(value)
 
 // ---------- Preview ----------
-@Preview(showBackground = true, widthDp = 390, heightDp = 844)
+
+@Preview(
+    showBackground = true,
+    widthDp = 390,
+    heightDp = 844,
+    name = "NutriCent Home Content"
+)
 @Composable
 private fun HomeContentPreview() {
-    MaterialTheme {
+    NutriCentTheme {
         HomeContent(
             userName = "Feby",
             consumedText = "1,100",
@@ -581,7 +969,9 @@ private fun HomeContentPreview() {
             spentText = "Rp26.000",
             totalText = "Rp40.000",
             budgetProgress = 0.65f,
-            menus = DummyData.foodLogs.take(4).map { it.toMenuUi() },
+            menus = DummyData.foodLogs
+                .take(4)
+                .map { it.toMenuUi() },
             onKaloriClick = {},
             onBudgetClick = {},
             onNotificationClick = {},

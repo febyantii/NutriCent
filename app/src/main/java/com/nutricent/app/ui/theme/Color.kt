@@ -86,3 +86,61 @@ val NutriBorderColor = Color(0xFFD3EDDF)
 
 val NutriScreenBackground = Color(0xFFFFFFFF)
 val NutriCardSurface = Color(0xFFFFFFFF)
+
+// ---------- HOME SCREEN ----------
+val HomeGreenSoft = Color(0xFFF3FAF6)
+val HomeGreenTrack = Color(0xFFD6F0E2)
+val HomeTextSecondary = Color(0xFF6B7280)
+
+// ---------- MENU HARI INI ----------
+val BreakfastBackground = Color(0xFFFFF9DB)
+val BreakfastBorder = Color(0xFFF3D77A)
+val BreakfastChip = Color(0xFFFFEFB0)
+
+val LunchBackground = Color(0xFFE9F8EF)
+val LunchBorder = Color(0xFF8ED1AC)
+val LunchChip = Color(0xFFCDEEDA)
+
+val DinnerBackground = Color(0xFFF3EBFF)
+val DinnerBorder = Color(0xFFC7A6FF)
+val DinnerChip = Color(0xFFE2D0FF)
+
+val SnackBackground = Color(0xFFFFEEE6)
+val SnackBorder = Color(0xFFF5B79A)
+val SnackChip = Color(0xFFFFD9C6)
+
+// ---------- AKSEN HOME ----------
+val HomeNotificationRed = Color(0xFFFF4D6D)
+val HomeRecommendationYellow = Color(0xFFFFF3C4)
+
+
+// ---------- JOURNAL SCREEN ----------
+val JournalGreen = Color(0xFF299D75)
+val JournalDarkGreen = Color(0xFF145448)
+val JournalMint = Color(0xFFE6F5EC)
+val JournalBorder = Color(0xFFD4EBE0)
+val JournalText = Color(0xFF263D35)
+val JournalGray = Color(0xFF879990)
+
+val JournalDateBackground = Color(0xFFF0F6F2)
+val JournalSubtitle = Color(0xFF71847B)
+val JournalActionRed = Color(0xFFC13D45)
+val JournalMenuIcon = Color(0xFF8DA4BD)
+
+
+/* ---------- LOGIN SCREEN ---------- */
+
+// Background mint yang lembut
+val LoginBackground = Color(0xFFF4FCF9)
+val LoginDecoration = Color(0xFFDDF7F1)
+val LoginSoftGreen = Color(0xFFE8F8F3)
+val LoginBorder = Color(0xFFBDEBE8)
+
+// Aksen hijau untuk tombol dan field
+val LoginGreen = Color(0xFF4DA181)
+val LoginDarkGreen = Color(0xFF145447)
+
+// Bercak dekoratif
+val LoginDecorationLight = Color(0xFFE3FAF4)
+val LoginDecorationPale = Color(0xFFE9FAF6)
+val LoginDecorationBottom = Color(0xFFDFF6F2)
