@@ -1,3 +1,4 @@
+
 package com.nutricent.app.ui.components
 
 import androidx.compose.foundation.background
@@ -36,11 +37,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.nutricent.app.ui.theme.NutriButtonGreen
-import com.nutricent.app.ui.theme.NutriDarkGreen
 
 enum class BottomTab {
-    HOME, JOURNAL, ANALYTICS, PROFILE
+    HOME,
+    JOURNAL,
+    ANALYTICS,
+    PROFILE
 }
 
 @Composable
@@ -52,7 +54,12 @@ fun AppBottomBar(
     onComingSoon: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val colorScheme = MaterialTheme.colorScheme
+    val colors = MaterialTheme.colorScheme
+
+    // Warna dari theme, otomatis menyesuaikan dark mode
+    val navbarBackground = colors.surface
+    val scanButtonColor = colors.primary
+    val scanIconColor = colors.onPrimary
 
     Box(
         modifier = modifier
@@ -60,6 +67,11 @@ fun AppBottomBar(
             .windowInsetsPadding(WindowInsets.navigationBars)
             .height(100.dp)
     ) {
+
+        // ==========================================
+        // NAVBAR BACKGROUND
+        // ==========================================
+
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -67,10 +79,10 @@ fun AppBottomBar(
                 .align(Alignment.BottomCenter)
                 .shadow(
                     elevation = 6.dp,
-                    spotColor = colorScheme.onSurface.copy(alpha = 0.10f),
-                    ambientColor = colorScheme.onSurface.copy(alpha = 0.05f)
+                    spotColor = colors.onSurface.copy(alpha = 0.10f),
+                    ambientColor = colors.onSurface.copy(alpha = 0.05f)
                 ),
-            color = colorScheme.surfaceContainerLowest
+            color = navbarBackground
         ) {
             Row(
                 modifier = Modifier
@@ -84,6 +96,7 @@ fun AppBottomBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
+
                 NavbarItem(
                     icon = Icons.Filled.Home,
                     label = "Beranda",
@@ -100,6 +113,7 @@ fun AppBottomBar(
                     modifier = Modifier.weight(1f)
                 )
 
+                // Space untuk tombol scan
                 Spacer(
                     modifier = Modifier.width(76.dp)
                 )
@@ -122,6 +136,10 @@ fun AppBottomBar(
             }
         }
 
+        // ==========================================
+        // FLOATING SCAN BUTTON
+        // ==========================================
+
         Surface(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -130,12 +148,12 @@ fun AppBottomBar(
                 .shadow(
                     elevation = 10.dp,
                     shape = CircleShape,
-                    spotColor = NutriButtonGreen.copy(alpha = 0.35f),
-                    ambientColor = NutriButtonGreen.copy(alpha = 0.18f)
+                    spotColor = scanButtonColor.copy(alpha = 0.35f),
+                    ambientColor = scanButtonColor.copy(alpha = 0.18f)
                 )
                 .clickable(onClick = onScanClick),
             shape = CircleShape,
-            color = colorScheme.surfaceContainerLowest,
+            color = navbarBackground,
             shadowElevation = 0.dp
         ) {
             Box(
@@ -143,7 +161,7 @@ fun AppBottomBar(
                     .fillMaxSize()
                     .padding(6.dp)
                     .background(
-                        color = NutriButtonGreen,
+                        color = scanButtonColor,
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -151,13 +169,17 @@ fun AppBottomBar(
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "Scan makanan",
-                    tint = Color.White,
+                    tint = scanIconColor,
                     modifier = Modifier.size(34.dp)
                 )
             }
         }
     }
 }
+
+// ==========================================
+// NAVIGATION ITEM
+// ==========================================
 
 @Composable
 private fun NavbarItem(
@@ -167,12 +189,14 @@ private fun NavbarItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val colorScheme = MaterialTheme.colorScheme
+    val colors = MaterialTheme.colorScheme
 
+    // Aktif: primary, inactive: onSurfaceVariant
+    // Tidak menggunakan alpha agar teks tetap terbaca
     val itemColor = if (selected) {
-        NutriDarkGreen
+        colors.primary
     } else {
-        colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+        colors.onSurfaceVariant
     }
 
     Column(
@@ -186,6 +210,7 @@ private fun NavbarItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
         Icon(
             imageVector = icon,
             contentDescription = label,
@@ -202,20 +227,21 @@ private fun NavbarItem(
             fontWeight = if (selected) {
                 FontWeight.Bold
             } else {
-                FontWeight.Normal
+                FontWeight.Medium
             },
             maxLines = 1
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
+        // Indikator di bawah item aktif
         Box(
             modifier = Modifier
                 .width(20.dp)
                 .height(3.dp)
                 .background(
                     color = if (selected) {
-                        NutriButtonGreen
+                        colors.primary
                     } else {
                         Color.Transparent
                     },

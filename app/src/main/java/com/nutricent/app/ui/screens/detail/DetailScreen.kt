@@ -1,4 +1,3 @@
-
 package com.nutricent.app.ui.screens.detail
 
 import androidx.compose.animation.AnimatedVisibility
@@ -67,9 +66,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nutricent.app.model.MealType
-import com.nutricent.app.ui.theme.NutriButtonGreen
+import com.nutricent.app.ui.theme.nutriButtonGreen
 import com.nutricent.app.ui.theme.NutriCentTheme
-import com.nutricent.app.ui.theme.NutriDarkGreen
+import com.nutricent.app.ui.theme.nutriDarkGreen
 import com.nutricent.app.util.Validators
 import com.nutricent.app.viewmodel.FoodLogViewModel
 import java.time.LocalDate
@@ -242,7 +241,7 @@ fun DetailScreen(
                                 imageVector =
                                     Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Kembali",
-                                tint = NutriDarkGreen,
+                                tint = MaterialTheme.colorScheme.nutriDarkGreen,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
@@ -254,7 +253,7 @@ fun DetailScreen(
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp
                         ),
-                        color = NutriDarkGreen,
+                        color = MaterialTheme.colorScheme.nutriDarkGreen,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -296,7 +295,7 @@ fun DetailScreen(
                                         imageVector =
                                             Icons.Default.Restaurant,
                                         contentDescription = null,
-                                        tint = NutriDarkGreen,
+                                        tint = MaterialTheme.colorScheme.nutriDarkGreen,
                                         modifier = Modifier.size(18.dp)
                                     )
                                 }
@@ -320,10 +319,10 @@ fun DetailScreen(
                                     textStyle =
                                         MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold,
-                                            color = NutriDarkGreen
+                                            color = MaterialTheme.colorScheme.nutriDarkGreen
                                         ),
                                     cursorBrush =
-                                        SolidColor(NutriDarkGreen),
+                                        SolidColor(MaterialTheme.colorScheme.nutriDarkGreen),
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .onFocusChanged {
@@ -362,7 +361,7 @@ fun DetailScreen(
                                             imageVector =
                                                 Icons.Default.Edit,
                                             contentDescription = "Edit Nama",
-                                            tint = NutriDarkGreen,
+                                            tint = MaterialTheme.colorScheme.nutriDarkGreen,
                                             modifier = Modifier.size(16.dp)
                                         )
                                     }
@@ -382,7 +381,7 @@ fun DetailScreen(
                                     imageVector =
                                         Icons.Default.Description,
                                     contentDescription = null,
-                                    tint = NutriDarkGreen,
+                                    tint = MaterialTheme.colorScheme.nutriDarkGreen,
                                     modifier = Modifier.size(18.dp)
                                 )
 
@@ -394,7 +393,7 @@ fun DetailScreen(
                                         MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold
                                         ),
-                                    color = NutriDarkGreen
+                                    color = MaterialTheme.colorScheme.nutriDarkGreen
                                 )
                             }
 
@@ -425,7 +424,7 @@ fun DetailScreen(
                                                 fontSize = 13.sp
                                             ),
                                         color =
-                                            NutriDarkGreen.copy(alpha = 0.4f)
+                                            MaterialTheme.colorScheme.nutriDarkGreen.copy(alpha = 0.4f)
                                     )
                                 }
 
@@ -439,10 +438,10 @@ fun DetailScreen(
                                     textStyle =
                                         MaterialTheme.typography.bodyMedium.copy(
                                             fontSize = 13.sp,
-                                            color = NutriDarkGreen
+                                            color = MaterialTheme.colorScheme.nutriDarkGreen
                                         ),
                                     cursorBrush =
-                                        SolidColor(NutriDarkGreen),
+                                        SolidColor(MaterialTheme.colorScheme.nutriDarkGreen),
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
@@ -479,7 +478,7 @@ fun DetailScreen(
                                         imageVector =
                                             Icons.Default.WbSunny,
                                         contentDescription = null,
-                                        tint = NutriDarkGreen,
+                                        tint = MaterialTheme.colorScheme.nutriDarkGreen,
                                         modifier = Modifier.size(18.dp)
                                     )
 
@@ -493,7 +492,7 @@ fun DetailScreen(
                                             MaterialTheme.typography.titleMedium.copy(
                                                 fontWeight = FontWeight.Bold
                                             ),
-                                        color = NutriDarkGreen
+                                        color = MaterialTheme.colorScheme.nutriDarkGreen
                                     )
                                 }
 
@@ -502,7 +501,7 @@ fun DetailScreen(
                                         Icons.Default.KeyboardArrowDown,
                                     contentDescription = null,
                                     tint =
-                                        NutriDarkGreen.copy(alpha = 0.5f),
+                                        MaterialTheme.colorScheme.nutriDarkGreen.copy(alpha = 0.5f),
                                     modifier = Modifier.size(20.dp)
                                 )
                             }
@@ -558,7 +557,7 @@ fun DetailScreen(
                                             imageVector =
                                                 Icons.Default.AddCircle,
                                             contentDescription = null,
-                                            tint = NutriDarkGreen,
+                                            tint = MaterialTheme.colorScheme.nutriDarkGreen,
                                             modifier = Modifier.size(14.dp)
                                         )
                                     }
@@ -572,7 +571,7 @@ fun DetailScreen(
                                         MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold
                                         ),
-                                    color = NutriDarkGreen
+                                    color = MaterialTheme.colorScheme.nutriDarkGreen
                                 )
 
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -581,7 +580,7 @@ fun DetailScreen(
                                     imageVector = Icons.Default.Info,
                                     contentDescription = null,
                                     tint =
-                                        NutriDarkGreen.copy(alpha = 0.4f),
+                                        MaterialTheme.colorScheme.nutriDarkGreen.copy(alpha = 0.4f),
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -605,7 +604,7 @@ fun DetailScreen(
                                                 fontSize = 32.sp,
                                                 fontWeight = FontWeight.Bold
                                             ),
-                                        color = NutriDarkGreen
+                                        color = MaterialTheme.colorScheme.nutriDarkGreen
                                     )
 
                                     Spacer(modifier = Modifier.width(4.dp))
@@ -616,7 +615,7 @@ fun DetailScreen(
                                             MaterialTheme.typography.titleMedium.copy(
                                                 fontWeight = FontWeight.Bold
                                             ),
-                                        color = NutriDarkGreen,
+                                        color = MaterialTheme.colorScheme.nutriDarkGreen,
                                         modifier =
                                             Modifier.padding(bottom = 4.dp)
                                     )
@@ -668,7 +667,7 @@ fun DetailScreen(
                                     imageVector =
                                         Icons.Default.Payments,
                                     contentDescription = null,
-                                    tint = NutriDarkGreen,
+                                    tint = MaterialTheme.colorScheme.nutriDarkGreen,
                                     modifier = Modifier.size(18.dp)
                                 )
 
@@ -680,7 +679,7 @@ fun DetailScreen(
                                         MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold
                                         ),
-                                    color = NutriDarkGreen
+                                    color = MaterialTheme.colorScheme.nutriDarkGreen
                                 )
                             }
 
@@ -717,7 +716,7 @@ fun DetailScreen(
                                         MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold
                                         ),
-                                    color = NutriDarkGreen
+                                    color = MaterialTheme.colorScheme.nutriDarkGreen
                                 )
 
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -734,13 +733,13 @@ fun DetailScreen(
                                     textStyle =
                                         MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold,
-                                            color = NutriDarkGreen
+                                            color = MaterialTheme.colorScheme.nutriDarkGreen
                                         ),
                                     keyboardOptions = KeyboardOptions(
                                         keyboardType = KeyboardType.Number
                                     ),
                                     cursorBrush =
-                                        SolidColor(NutriDarkGreen),
+                                        SolidColor(MaterialTheme.colorScheme.nutriDarkGreen),
                                     modifier = Modifier
                                         .weight(1f)
                                         .onFocusChanged {
@@ -758,7 +757,7 @@ fun DetailScreen(
                                             Icons.Default.Edit,
                                         contentDescription = "Edit Harga",
                                         tint =
-                                            NutriDarkGreen.copy(alpha = 0.5f),
+                                            MaterialTheme.colorScheme.nutriDarkGreen.copy(alpha = 0.5f),
                                         modifier = Modifier.size(18.dp)
                                     )
                                 }
@@ -806,8 +805,8 @@ fun DetailScreen(
                         },
                         enabled = isFormValid,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = NutriButtonGreen,
-                            contentColor = Color.White
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -874,7 +873,7 @@ private fun CustomMealChip(
             .border(
                 width = 1.dp,
                 color = if (isSelected) {
-                    NutriDarkGreen
+                    MaterialTheme.colorScheme.nutriDarkGreen
                 } else {
                     MaterialTheme.colorScheme.outlineVariant
                 },
@@ -895,7 +894,7 @@ private fun CustomMealChip(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = NutriDarkGreen,
+                tint = MaterialTheme.colorScheme.nutriDarkGreen,
                 modifier = Modifier.size(12.dp)
             )
 
@@ -911,7 +910,7 @@ private fun CustomMealChip(
                     },
                     fontSize = 11.sp
                 ),
-                color = NutriDarkGreen
+                color = MaterialTheme.colorScheme.nutriDarkGreen
             )
         }
     }
@@ -960,7 +959,7 @@ private fun NutritonBadge(
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontSize = 9.sp
                     ),
-                    color = NutriDarkGreen
+                    color = MaterialTheme.colorScheme.nutriDarkGreen
                 )
 
                 Text(
@@ -968,7 +967,7 @@ private fun NutritonBadge(
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontWeight = FontWeight.Bold
                     ),
-                    color = NutriDarkGreen
+                    color = MaterialTheme.colorScheme.nutriDarkGreen
                 )
             }
         }

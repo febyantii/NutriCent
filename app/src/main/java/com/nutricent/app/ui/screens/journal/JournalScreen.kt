@@ -12,10 +12,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import com.nutricent.app.ui.theme.HomeNotificationRed
+import com.nutricent.app.ui.theme.homeNotificationRed
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
@@ -54,6 +53,7 @@ import com.nutricent.app.model.FoodLog
 import com.nutricent.app.model.MealType
 import com.nutricent.app.ui.components.AppBottomBar
 import com.nutricent.app.ui.components.BottomTab
+import com.nutricent.app.ui.components.ThemeSettingsMenu
 import com.nutricent.app.ui.theme.NutriCentTheme
 import com.nutricent.app.ui.theme.journalActionRed
 import com.nutricent.app.ui.theme.journalBorder
@@ -255,8 +255,7 @@ fun JournalScreen(
 
 @Composable
 private fun JournalHeader(
-    onNotificationClick: () -> Unit = {},
-    onSettingsClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {}
 ) {
     Column {
         Row(
@@ -292,22 +291,14 @@ private fun JournalHeader(
                             modifier = Modifier
                                 .size(8.dp)
                                 .clip(CircleShape)
-                                .background(HomeNotificationRed)
+                                .background(MaterialTheme.colorScheme.homeNotificationRed)
                                 .align(Alignment.TopEnd)
                         )
                     }
                 }
 
-                // Ikon settings sama seperti halaman Home.
-                IconButton(
-                    onClick = onSettingsClick
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Pengaturan",
-                        tint = MaterialTheme.colorScheme.journalDarkGreen
-                    )
-                }
+                // Popup tema bersama dengan halaman Home.
+                ThemeSettingsMenu()
             }
         }
 
@@ -388,7 +379,7 @@ private fun JournalDateSelector(
                     .weight(1f)
                     .background(
                         if (chosen) {
-                            MaterialTheme.colorScheme.journalDarkGreen
+                            MaterialTheme.colorScheme.primary
                         } else {
                             MaterialTheme.colorScheme.journalDateBackground
                         },
@@ -404,7 +395,7 @@ private fun JournalDateSelector(
                     text = day,
                     fontSize = 10.sp,
                     color = if (chosen) {
-                        androidx.compose.ui.graphics.Color.White
+                        MaterialTheme.colorScheme.onPrimary
                     } else {
                         MaterialTheme.colorScheme.journalGray
                     }
@@ -417,7 +408,7 @@ private fun JournalDateSelector(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (chosen) {
-                        androidx.compose.ui.graphics.Color.White
+                        MaterialTheme.colorScheme.onPrimary
                     } else {
                         MaterialTheme.colorScheme.journalText
                     }
@@ -430,7 +421,7 @@ private fun JournalDateSelector(
                         .size(4.dp)
                         .background(
                             if (chosen) {
-                                androidx.compose.ui.graphics.Color.White
+                                MaterialTheme.colorScheme.onPrimary
                             } else {
                                 androidx.compose.ui.graphics.Color.Transparent
                             },

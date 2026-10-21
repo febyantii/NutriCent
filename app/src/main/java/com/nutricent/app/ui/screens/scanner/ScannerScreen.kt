@@ -50,7 +50,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nutricent.app.R
-import com.nutricent.app.ui.theme.NutriButtonGreen
+import com.nutricent.app.ui.theme.nutriButtonGreen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -104,9 +104,9 @@ fun ScannerScreen(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                NutriButtonGreen,
+                                MaterialTheme.colorScheme.nutriButtonGreen,
                                 Color.White,
-                                NutriButtonGreen,
+                                MaterialTheme.colorScheme.nutriButtonGreen,
                                 Color.Transparent
                             )
                         )
@@ -217,7 +217,7 @@ fun ScannerScreen(
                 .offset(y = (-40).dp)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CircularProgressIndicator(color = NutriButtonGreen)
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.nutriButtonGreen)
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Menganalisis Makanan...",
@@ -245,7 +245,7 @@ fun ScannerScreen(
                     modifier = Modifier
                         .size(72.dp)
                         .clip(CircleShape)
-                        .border(4.dp, NutriButtonGreen, CircleShape)
+                        .border(4.dp, MaterialTheme.colorScheme.nutriButtonGreen, CircleShape)
                         .clickable(enabled = !isScanning) { isScanning = true },
                     contentAlignment = Alignment.Center
                 ) {
@@ -253,7 +253,7 @@ fun ScannerScreen(
                         modifier = Modifier
                             .size(54.dp)
                             .clip(CircleShape)
-                            .background(NutriButtonGreen)
+                            .background(MaterialTheme.colorScheme.nutriButtonGreen)
                     )
                 }
             }

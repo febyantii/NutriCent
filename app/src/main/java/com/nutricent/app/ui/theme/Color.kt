@@ -144,3 +144,79 @@ val LoginDarkGreen = Color(0xFF145447)
 val LoginDecorationLight = Color(0xFFE3FAF4)
 val LoginDecorationPale = Color(0xFFE9FAF6)
 val LoginDecorationBottom = Color(0xFFDFF6F2)
+
+
+// ===============================================
+// NUTRICENT - DARK MODE CUSTOM COLORS
+// Tambahkan di bagian bawah Color.kt
+// ===============================================
+
+// ---------- GLOBAL ----------
+val NutriTealDark = Color(0xFF79DCCB)
+val OnNutriTealDark = Color(0xFF00382F)
+
+val NutriDarkGreenDark = Color(0xFFC4EBD6)
+val NutriButtonGreenDark = Color(0xFF91D7B1)
+val NutriBadgeContainerDark = Color(0xFF284437)
+val NutriBorderColorDark = Color(0xFF40594B)
+
+val NutriScreenBackgroundDark = Color(0xFF141A17)
+val NutriCardSurfaceDark = Color(0xFF222D27)
+
+// ---------- HOME SCREEN ----------
+val HomeGreenSoftDark = Color(0xFF21352B)
+val HomeGreenTrackDark = Color(0xFF355846)
+val HomeTextSecondaryDark = Color(0xFFADBDB3)
+
+val HomeNotificationRedDark = Color(0xFFFF8798)
+val HomeRecommendationYellowDark = Color(0xFF493D21)
+
+// ---------- MENU HARI INI ----------
+// Breakfast - warm yellow
+val BreakfastBackgroundDark = Color(0xFF3A3320)
+val BreakfastBorderDark = Color(0xFF927943)
+val BreakfastChipDark = Color(0xFF514421)
+
+// Lunch - mint green
+val LunchBackgroundDark = Color(0xFF20382C)
+val LunchBorderDark = Color(0xFF548B6C)
+val LunchChipDark = Color(0xFF30553E)
+
+// Dinner - soft purple
+val DinnerBackgroundDark = Color(0xFF30273D)
+val DinnerBorderDark = Color(0xFF9173B5)
+val DinnerChipDark = Color(0xFF46365C)
+
+// Snack - peach
+val SnackBackgroundDark = Color(0xFF3D2C25)
+val SnackBorderDark = Color(0xFFAD7C64)
+val SnackChipDark = Color(0xFF573A2C)
+
+// ---------- JOURNAL SCREEN ----------
+val JournalGreenDarkMode = Color(0xFF87D9AC)
+val JournalDarkGreenDarkMode = Color(0xFFC4EBD6)
+
+val JournalMintDark = Color(0xFF263F32)
+val JournalBorderDark = Color(0xFF40594B)
+
+val JournalTextDark = Color(0xFFE5F0E9)
+val JournalGrayDark = Color(0xFFACBFB3)
+
+val JournalDateBackgroundDark = Color(0xFF26352C)
+val JournalSubtitleDark = Color(0xFFB2C2B8)
+val JournalActionRedDark = Color(0xFFFF9299)
+val JournalMenuIconDark = Color(0xFFACC5D8)
+
+// ---------- LOGIN SCREEN ----------
+val LoginBackgroundDark = Color(0xFF141D19)
+val LoginDecorationDark = Color(0xFF20382E)
+val LoginSoftGreenDark = Color(0xFF243D31)
+val LoginBorderDark = Color(0xFF426C58)
+
+val LoginGreenDarkMode = Color(0xFF91D7B1)
+val LoginDarkGreenDarkMode = Color(0xFFC4EBD6)
+
+val LoginDecorationLightDark = Color(0xFF254435)
+val LoginDecorationPaleDark = Color(0xFF1C3027)
+val LoginDecorationBottomDark = Color(0xFF29483A)
+

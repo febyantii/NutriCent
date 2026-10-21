@@ -1,4 +1,3 @@
-
 package com.nutricent.app.ui.screens.home
 
 import androidx.annotation.DrawableRes
@@ -20,7 +19,6 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Restaurant
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -47,28 +45,29 @@ import com.nutricent.app.model.FoodLog
 import com.nutricent.app.model.MealType
 import com.nutricent.app.ui.components.AppBottomBar
 import com.nutricent.app.ui.components.BottomTab
-import com.nutricent.app.ui.theme.BreakfastBackground
-import com.nutricent.app.ui.theme.BreakfastBorder
-import com.nutricent.app.ui.theme.BreakfastChip
-import com.nutricent.app.ui.theme.DinnerBackground
-import com.nutricent.app.ui.theme.DinnerBorder
-import com.nutricent.app.ui.theme.DinnerChip
-import com.nutricent.app.ui.theme.HomeGreenSoft
-import com.nutricent.app.ui.theme.HomeGreenTrack
-import com.nutricent.app.ui.theme.HomeNotificationRed
-import com.nutricent.app.ui.theme.HomeRecommendationYellow
-import com.nutricent.app.ui.theme.HomeTextSecondary
-import com.nutricent.app.ui.theme.LunchBackground
-import com.nutricent.app.ui.theme.LunchBorder
-import com.nutricent.app.ui.theme.LunchChip
-import com.nutricent.app.ui.theme.NutriBorderColor
-import com.nutricent.app.ui.theme.NutriButtonGreen
+import com.nutricent.app.ui.components.ThemeSettingsMenu
+import com.nutricent.app.ui.theme.breakfastBackground
+import com.nutricent.app.ui.theme.breakfastBorder
+import com.nutricent.app.ui.theme.breakfastChip
+import com.nutricent.app.ui.theme.dinnerBackground
+import com.nutricent.app.ui.theme.dinnerBorder
+import com.nutricent.app.ui.theme.dinnerChip
+import com.nutricent.app.ui.theme.homeGreenSoft
+import com.nutricent.app.ui.theme.homeGreenTrack
+import com.nutricent.app.ui.theme.homeNotificationRed
+import com.nutricent.app.ui.theme.homeRecommendationYellow
+import com.nutricent.app.ui.theme.homeTextSecondary
+import com.nutricent.app.ui.theme.lunchBackground
+import com.nutricent.app.ui.theme.lunchBorder
+import com.nutricent.app.ui.theme.lunchChip
+import com.nutricent.app.ui.theme.nutriBorderColor
+import com.nutricent.app.ui.theme.nutriButtonGreen
 import com.nutricent.app.ui.theme.NutriCentTheme
-import com.nutricent.app.ui.theme.NutriDarkGreen
-import com.nutricent.app.ui.theme.NutriScreenBackground
-import com.nutricent.app.ui.theme.SnackBackground
-import com.nutricent.app.ui.theme.SnackBorder
-import com.nutricent.app.ui.theme.SnackChip
+import com.nutricent.app.ui.theme.nutriDarkGreen
+import com.nutricent.app.ui.theme.nutriScreenBackground
+import com.nutricent.app.ui.theme.snackBackground
+import com.nutricent.app.ui.theme.snackBorder
+import com.nutricent.app.ui.theme.snackChip
 import com.nutricent.app.util.formatRupiah
 import com.nutricent.app.viewmodel.FoodLogViewModel
 import kotlinx.coroutines.launch
@@ -91,14 +90,15 @@ data class MenuItemUi(
  * Mengubah data makanan menjadi tampilan kartu sesuai jenis makanan.
  * Seluruh warna kartu berasal dari Color.kt.
  */
+@Composable
 private fun FoodLog.toMenuUi(): MenuItemUi = when (mealType) {
     MealType.BREAKFAST -> MenuItemUi(
         title = "Breakfast",
         foodName = name,
         kcal = calories,
-        background = BreakfastBackground,
-        border = BreakfastBorder,
-        chipColor = BreakfastChip,
+        background = MaterialTheme.colorScheme.breakfastBackground,
+        border = MaterialTheme.colorScheme.breakfastBorder,
+        chipColor = MaterialTheme.colorScheme.breakfastChip,
         imageRes = imageRes
     )
 
@@ -106,9 +106,9 @@ private fun FoodLog.toMenuUi(): MenuItemUi = when (mealType) {
         title = "Lunch",
         foodName = name,
         kcal = calories,
-        background = LunchBackground,
-        border = LunchBorder,
-        chipColor = LunchChip,
+        background = MaterialTheme.colorScheme.lunchBackground,
+        border = MaterialTheme.colorScheme.lunchBorder,
+        chipColor = MaterialTheme.colorScheme.lunchChip,
         imageRes = imageRes
     )
 
@@ -116,9 +116,9 @@ private fun FoodLog.toMenuUi(): MenuItemUi = when (mealType) {
         title = "Dinner",
         foodName = name,
         kcal = calories,
-        background = DinnerBackground,
-        border = DinnerBorder,
-        chipColor = DinnerChip,
+        background = MaterialTheme.colorScheme.dinnerBackground,
+        border = MaterialTheme.colorScheme.dinnerBorder,
+        chipColor = MaterialTheme.colorScheme.dinnerChip,
         imageRes = imageRes
     )
 
@@ -126,9 +126,9 @@ private fun FoodLog.toMenuUi(): MenuItemUi = when (mealType) {
         title = "Snack",
         foodName = name,
         kcal = calories,
-        background = SnackBackground,
-        border = SnackBorder,
-        chipColor = SnackChip,
+        background = MaterialTheme.colorScheme.snackBackground,
+        border = MaterialTheme.colorScheme.snackBorder,
+        chipColor = MaterialTheme.colorScheme.snackChip,
         imageRes = imageRes
     )
 }
@@ -180,7 +180,7 @@ fun HomeScreen(
         }
 
     Scaffold(
-        containerColor = NutriScreenBackground,
+        containerColor = MaterialTheme.colorScheme.nutriScreenBackground,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
@@ -213,7 +213,6 @@ fun HomeScreen(
             onKaloriClick = onNavigateToJournal,
             onBudgetClick = comingSoon,
             onNotificationClick = comingSoon,
-            onSettingsClick = comingSoon,
             onSeeAll = onNavigateToJournal,
             onCameraClick = {
                 onNavigateToScanner()
@@ -244,7 +243,6 @@ private fun HomeContent(
     onKaloriClick: () -> Unit,
     onBudgetClick: () -> Unit,
     onNotificationClick: () -> Unit,
-    onSettingsClick: () -> Unit,
     onSeeAll: () -> Unit,
     onCameraClick: (MenuItemUi) -> Unit,
     onTestDetailClick: () -> Unit
@@ -258,8 +256,7 @@ private fun HomeContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         HomeTopBar(
-            onNotificationClick = onNotificationClick,
-            onSettingsClick = onSettingsClick
+            onNotificationClick = onNotificationClick
         )
 
         GreetingRow(userName = userName)
@@ -295,8 +292,7 @@ private fun HomeContent(
 
 @Composable
 private fun HomeTopBar(
-    onNotificationClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onNotificationClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -319,26 +315,20 @@ private fun HomeTopBar(
                     Icon(
                         imageVector = Icons.Default.Notifications,
                         contentDescription = "Notifikasi",
-                        tint = NutriDarkGreen
+                        tint = MaterialTheme.colorScheme.nutriDarkGreen
                     )
 
                     Box(
                         modifier = Modifier
                             .size(8.dp)
                             .clip(CircleShape)
-                            .background(HomeNotificationRed)
+                            .background(MaterialTheme.colorScheme.homeNotificationRed)
                             .align(Alignment.TopEnd)
                     )
                 }
             }
 
-            IconButton(onClick = onSettingsClick) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Pengaturan",
-                    tint = NutriDarkGreen
-                )
-            }
+            ThemeSettingsMenu()
         }
     }
 }
@@ -352,13 +342,13 @@ private fun GreetingRow(userName: String) {
             modifier = Modifier
                 .size(52.dp)
                 .clip(CircleShape)
-                .background(HomeGreenTrack),
+                .background(MaterialTheme.colorScheme.homeGreenTrack),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = userName.take(1).uppercase(),
                 fontWeight = FontWeight.Bold,
-                color = NutriDarkGreen,
+                color = MaterialTheme.colorScheme.nutriDarkGreen,
                 fontSize = 20.sp
             )
         }
@@ -370,13 +360,13 @@ private fun GreetingRow(userName: String) {
                 text = "Hai, $userName!",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = NutriDarkGreen
+                color = MaterialTheme.colorScheme.nutriDarkGreen
             )
 
             Text(
                 text = "Yuk, jaga kesehatan dan keuanganmu hari ini!",
                 fontSize = 12.sp,
-                color = HomeTextSecondary
+                color = MaterialTheme.colorScheme.homeTextSecondary
             )
         }
     }
@@ -394,9 +384,9 @@ private fun SoftCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = HomeGreenSoft
+            containerColor = MaterialTheme.colorScheme.homeGreenSoft
         ),
-        border = BorderStroke(1.dp, NutriBorderColor),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.nutriBorderColor),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 0.dp
         )
@@ -421,7 +411,7 @@ private fun CardHeader(
             modifier = Modifier
                 .size(24.dp)
                 .clip(CircleShape)
-                .background(HomeGreenTrack),
+                .background(MaterialTheme.colorScheme.homeGreenTrack),
             contentAlignment = Alignment.Center
         ) {
             icon()
@@ -432,7 +422,7 @@ private fun CardHeader(
         Text(
             text = title,
             fontWeight = FontWeight.SemiBold,
-            color = NutriDarkGreen,
+            color = MaterialTheme.colorScheme.nutriDarkGreen,
             fontSize = 15.sp,
             modifier = Modifier.weight(1f)
         )
@@ -440,7 +430,7 @@ private fun CardHeader(
         Icon(
             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            tint = HomeTextSecondary,
+            tint = MaterialTheme.colorScheme.homeTextSecondary,
             modifier = Modifier.size(18.dp)
         )
     }
@@ -463,7 +453,7 @@ private fun KaloriCard(
             Icon(
                 imageVector = Icons.Default.Eco,
                 contentDescription = null,
-                tint = NutriButtonGreen,
+                tint = MaterialTheme.colorScheme.nutriButtonGreen,
                 modifier = Modifier.size(14.dp)
             )
         }
@@ -484,7 +474,7 @@ private fun KaloriCard(
                     text = "${(p * 100).toInt()}% terpenuhi",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = NutriDarkGreen
+                    color = MaterialTheme.colorScheme.nutriDarkGreen
                 )
             }
 
@@ -496,7 +486,7 @@ private fun KaloriCard(
                         text = consumedText,
                         fontSize = 36.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        color = NutriDarkGreen
+                        color = MaterialTheme.colorScheme.nutriDarkGreen
                     )
 
                     Spacer(Modifier.width(4.dp))
@@ -504,7 +494,7 @@ private fun KaloriCard(
                     Text(
                         text = "/ $targetText kcal",
                         fontSize = 14.sp,
-                        color = NutriDarkGreen,
+                        color = MaterialTheme.colorScheme.nutriDarkGreen,
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
                 }
@@ -512,7 +502,7 @@ private fun KaloriCard(
                 Spacer(Modifier.height(6.dp))
 
                 LegendDot(
-                    color = NutriButtonGreen,
+                    color = MaterialTheme.colorScheme.nutriButtonGreen,
                     value = "$consumedText kcal",
                     label = "dikonsumsi"
                 )
@@ -520,7 +510,7 @@ private fun KaloriCard(
                 Spacer(Modifier.height(2.dp))
 
                 LegendDot(
-                    color = HomeGreenTrack,
+                    color = MaterialTheme.colorScheme.homeGreenTrack,
                     value = "$remainingText kcal",
                     label = "sisa"
                 )
@@ -535,6 +525,9 @@ private fun CircularProgress(
     size: Dp,
     stroke: Dp
 ) {
+    val trackColor = MaterialTheme.colorScheme.homeGreenTrack
+    val progressColor = MaterialTheme.colorScheme.nutriButtonGreen
+
     Canvas(Modifier.size(size)) {
         val strokePx = stroke.toPx()
         val arcSize = Size(
@@ -544,7 +537,7 @@ private fun CircularProgress(
         val topLeft = Offset(strokePx / 2, strokePx / 2)
 
         drawArc(
-            color = HomeGreenTrack,
+            color = trackColor,
             startAngle = 0f,
             sweepAngle = 360f,
             useCenter = false,
@@ -554,7 +547,7 @@ private fun CircularProgress(
         )
 
         drawArc(
-            color = NutriButtonGreen,
+            color = progressColor,
             startAngle = -90f,
             sweepAngle = 360f * progress.coerceIn(0f, 1f),
             useCenter = false,
@@ -587,7 +580,7 @@ private fun LegendDot(
         Text(
             text = value,
             fontSize = 11.sp,
-            color = NutriDarkGreen
+            color = MaterialTheme.colorScheme.nutriDarkGreen
         )
 
         Spacer(Modifier.width(3.dp))
@@ -595,7 +588,7 @@ private fun LegendDot(
         Text(
             text = "($label)",
             fontSize = 11.sp,
-            color = HomeTextSecondary
+            color = MaterialTheme.colorScheme.homeTextSecondary
         )
     }
 }
@@ -617,7 +610,7 @@ private fun BudgetCard(
                 text = "Rp",
                 fontSize = 9.sp,
                 fontWeight = FontWeight.Bold,
-                color = NutriButtonGreen
+                color = MaterialTheme.colorScheme.nutriButtonGreen
             )
         }
 
@@ -627,13 +620,13 @@ private fun BudgetCard(
             text = spentText,
             fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = NutriDarkGreen
+            color = MaterialTheme.colorScheme.nutriDarkGreen
         )
 
         Text(
             text = "/ $totalText",
             fontSize = 12.sp,
-            color = HomeTextSecondary
+            color = MaterialTheme.colorScheme.homeTextSecondary
         )
 
         Spacer(Modifier.height(8.dp))
@@ -644,8 +637,8 @@ private fun BudgetCard(
                 .fillMaxWidth()
                 .height(10.dp)
                 .clip(RoundedCornerShape(50)),
-            color = NutriButtonGreen,
-            trackColor = HomeGreenTrack,
+            color = MaterialTheme.colorScheme.nutriButtonGreen,
+            trackColor = MaterialTheme.colorScheme.homeGreenTrack,
             strokeCap = StrokeCap.Round,
             gapSize = 0.dp,
             drawStopIndicator = {}
@@ -657,7 +650,7 @@ private fun BudgetCard(
             text = "${(p * 100).toInt()}% terpakai",
             fontSize = 11.sp,
             fontWeight = FontWeight.SemiBold,
-            color = NutriDarkGreen
+            color = MaterialTheme.colorScheme.nutriDarkGreen
         )
     }
 }
@@ -681,13 +674,13 @@ private fun MenuHariIniSection(
                     modifier = Modifier
                         .size(24.dp)
                         .clip(CircleShape)
-                        .background(HomeGreenTrack),
+                        .background(MaterialTheme.colorScheme.homeGreenTrack),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Restaurant,
                         contentDescription = null,
-                        tint = NutriButtonGreen,
+                        tint = MaterialTheme.colorScheme.nutriButtonGreen,
                         modifier = Modifier.size(14.dp)
                     )
                 }
@@ -697,7 +690,7 @@ private fun MenuHariIniSection(
                 Text(
                     text = "Menu Hari Ini",
                     fontWeight = FontWeight.Bold,
-                    color = NutriDarkGreen,
+                    color = MaterialTheme.colorScheme.nutriDarkGreen,
                     fontSize = 16.sp
                 )
             }
@@ -709,13 +702,13 @@ private fun MenuHariIniSection(
                 Text(
                     text = "Lihat Semua",
                     fontSize = 12.sp,
-                    color = NutriDarkGreen
+                    color = MaterialTheme.colorScheme.nutriDarkGreen
                 )
 
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
-                    tint = NutriDarkGreen,
+                    tint = MaterialTheme.colorScheme.nutriDarkGreen,
                     modifier = Modifier.size(16.dp)
                 )
             }
@@ -760,7 +753,7 @@ private fun MenuCard(
             modifier = Modifier
                 .size(64.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.7f)),
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)),
             contentAlignment = Alignment.Center
         ) {
             if (menu.imageRes != null) {
@@ -774,7 +767,7 @@ private fun MenuCard(
                 Icon(
                     imageVector = Icons.Default.Restaurant,
                     contentDescription = null,
-                    tint = NutriDarkGreen.copy(alpha = 0.6f)
+                    tint = MaterialTheme.colorScheme.nutriDarkGreen.copy(alpha = 0.6f)
                 )
             }
         }
@@ -785,14 +778,14 @@ private fun MenuCard(
             text = menu.title,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
-            color = NutriDarkGreen,
+            color = MaterialTheme.colorScheme.nutriDarkGreen,
             maxLines = 1
         )
 
         Text(
             text = menu.foodName,
             fontSize = 10.sp,
-            color = HomeTextSecondary,
+            color = MaterialTheme.colorScheme.homeTextSecondary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -802,7 +795,7 @@ private fun MenuCard(
         Text(
             text = "${menu.kcal} kcal",
             fontSize = 10.sp,
-            color = NutriDarkGreen,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .clip(RoundedCornerShape(50))
                 .background(menu.chipColor)
@@ -818,13 +811,13 @@ private fun MenuCard(
             onClick = onCameraClick,
             modifier = Modifier.size(28.dp),
             colors = IconButtonDefaults.filledIconButtonColors(
-                containerColor = NutriButtonGreen
+                containerColor = MaterialTheme.colorScheme.primary
             )
         ) {
             Icon(
                 imageVector = Icons.Default.CameraAlt,
                 contentDescription = "Scan makanan",
-                tint = Color.White,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(14.dp)
             )
         }
@@ -841,7 +834,7 @@ private fun RekomendasiSection(text: String) {
                 modifier = Modifier
                     .size(24.dp)
                     .clip(CircleShape)
-                    .background(HomeRecommendationYellow),
+                    .background(MaterialTheme.colorScheme.homeRecommendationYellow),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -855,7 +848,7 @@ private fun RekomendasiSection(text: String) {
             Text(
                 text = "Rekomendasi Hari Ini",
                 fontWeight = FontWeight.Bold,
-                color = NutriDarkGreen,
+                color = MaterialTheme.colorScheme.nutriDarkGreen,
                 fontSize = 16.sp
             )
         }
@@ -867,10 +860,10 @@ private fun RekomendasiSection(text: String) {
                 modifier = Modifier
                     .weight(1f)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(HomeGreenSoft)
+                    .background(MaterialTheme.colorScheme.homeGreenSoft)
                     .border(
                         width = 1.dp,
-                        color = NutriBorderColor,
+                        color = MaterialTheme.colorScheme.nutriBorderColor,
                         shape = RoundedCornerShape(16.dp)
                     )
                     .padding(14.dp),
@@ -880,13 +873,13 @@ private fun RekomendasiSection(text: String) {
                     modifier = Modifier
                         .size(32.dp)
                         .clip(CircleShape)
-                        .background(HomeGreenTrack),
+                        .background(MaterialTheme.colorScheme.homeGreenTrack),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Eco,
                         contentDescription = null,
-                        tint = NutriButtonGreen,
+                        tint = MaterialTheme.colorScheme.nutriButtonGreen,
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -896,7 +889,7 @@ private fun RekomendasiSection(text: String) {
                 Text(
                     text = text,
                     fontSize = 13.sp,
-                    color = NutriDarkGreen,
+                    color = MaterialTheme.colorScheme.nutriDarkGreen,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -919,13 +912,13 @@ private fun CentyMascot() {
             text = "Centy here!\nMinum air putih cukup hari ini, ya!",
             fontSize = 8.sp,
             lineHeight = 10.sp,
-            color = NutriDarkGreen,
+            color = MaterialTheme.colorScheme.nutriDarkGreen,
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
-                .background(HomeGreenSoft)
+                .background(MaterialTheme.colorScheme.homeGreenSoft)
                 .border(
                     width = 1.dp,
-                    color = NutriBorderColor,
+                    color = MaterialTheme.colorScheme.nutriBorderColor,
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(6.dp)
@@ -975,7 +968,6 @@ private fun HomeContentPreview() {
             onKaloriClick = {},
             onBudgetClick = {},
             onNotificationClick = {},
-            onSettingsClick = {},
             onSeeAll = {},
             onCameraClick = {},
             onTestDetailClick = {}

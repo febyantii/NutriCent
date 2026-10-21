@@ -1,4 +1,3 @@
-
 package com.nutricent.app.ui.screens.login
 
 import androidx.compose.foundation.BorderStroke
@@ -210,7 +209,12 @@ fun LoginScreen(
                         unfocusedBorderColor = colors.loginBorder,
                         focusedBorderColor = colors.loginGreen,
                         unfocusedContainerColor = colors.surface,
-                        focusedContainerColor = colors.surface
+                        focusedContainerColor = colors.surface,
+                        focusedTextColor = colors.onSurface,
+                        unfocusedTextColor = colors.onSurface,
+                        focusedLabelColor = colors.loginGreen,
+                        unfocusedLabelColor = colors.onSurfaceVariant,
+                        cursorColor = colors.primary
                     )
                 )
 
@@ -279,7 +283,12 @@ fun LoginScreen(
                         unfocusedBorderColor = colors.loginBorder,
                         focusedBorderColor = colors.loginGreen,
                         unfocusedContainerColor = colors.surface,
-                        focusedContainerColor = colors.surface
+                        focusedContainerColor = colors.surface,
+                        focusedTextColor = colors.onSurface,
+                        unfocusedTextColor = colors.onSurface,
+                        focusedLabelColor = colors.loginGreen,
+                        unfocusedLabelColor = colors.onSurfaceVariant,
+                        cursorColor = colors.primary
                     )
                 )
 
@@ -312,7 +321,7 @@ fun LoginScreen(
                         .height(48.dp),
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colors.loginGreen,
+                        containerColor = colors.primary,
                         contentColor = colors.onPrimary
                     )
                 ) {
